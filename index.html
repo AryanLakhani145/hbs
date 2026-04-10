@@ -1659,24 +1659,312 @@ mark {
 .delay-6 { animation-delay: 0.6s; opacity: 0; }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  .concept-grid { grid-template-columns: 1fr; }
-  .framework-row { grid-template-columns: 1fr; gap: 0.5rem; }
-  .stat-row { grid-template-columns: 1fr; }
-  .toc-grid { grid-template-columns: 1fr; }
-  .glossary-item { grid-template-columns: 1fr; gap: 0.5rem; }
-  .sidebar-note { float: none; width: 100%; margin: 1rem 0; }
-  .chapter-dots { display: none; }
-  .nav-center { display: none; }
-  .hero-title { letter-spacing: -2px; }
+/* ============================================================
+   MOBILE — Complete overhaul
+   ============================================================ */
+
+/* ---- HAMBURGER BUTTON (mobile only) ---- */
+#mobile-menu-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--bd);
+  color: var(--fg-muted);
+  width: 36px; height: 36px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
+/* ---- MOBILE DRAWER ---- */
+#mobile-drawer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+}
+
+#mobile-drawer.open { display: block; }
+
+.mobile-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+}
+
+.mobile-drawer-panel {
+  position: absolute;
+  top: 0; right: 0;
+  width: min(320px, 88vw);
+  height: 100%;
+  background: var(--bg-2);
+  border-left: 1px solid var(--bd-dim);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+#mobile-drawer.open .mobile-drawer-panel {
+  transform: translateX(0);
+}
+
+.mobile-drawer-head {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--bd-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.mobile-drawer-logo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.mobile-drawer-close {
+  background: none; border: none;
+  color: var(--fg-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+}
+
+.mobile-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0 2rem;
+}
+
+.mobile-nav-section {
+  padding: 0.5rem 1.5rem 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-top: 0.75rem;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.mobile-nav-link:hover, .mobile-nav-link:active {
+  background: var(--bg-3);
+  color: var(--fg);
+}
+
+.mobile-nav-link.b1 { border-left-color: var(--gold); }
+.mobile-nav-link.b2 { border-left-color: var(--red-light); }
+.mobile-nav-link.special { border-left-color: var(--fg-muted); }
+
+.mobile-nav-link-num {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--fg-muted);
+  min-width: 1.5rem;
+}
+
+.mobile-drawer-divider {
+  height: 1px;
+  background: var(--bd-dim);
+  margin: 0.75rem 1.5rem;
+}
+
+.mobile-drawer-actions {
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  border-top: 1px solid var(--bd-dim);
+  flex-shrink: 0;
+}
+
+.mobile-action-btn {
+  flex: 1;
+  background: var(--bg-3);
+  border: 1px solid var(--bd-dim);
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.mobile-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---- BREAKPOINT: TABLET & MOBILE ---- */
+@media (max-width: 768px) {
+
+  /* Nav */
+  .nav-center { display: none; }
+  #mobile-menu-btn { display: flex; }
+  #search-btn { font-size: 0; padding: 0.35rem 0.6rem; letter-spacing: 0; }
+  #search-btn::before { content: '⌕'; font-size: 1rem; }
+
+  /* Content padding */
+  #content, .content-area { padding-left: 1.25rem; padding-right: 1.25rem; }
+  #hero { padding-left: 1.25rem; padding-right: 1.25rem; padding-top: 7rem; }
+  #toc { padding-left: 1.25rem; padding-right: 1.25rem; }
+
+  /* TOC */
+  .toc-grid { grid-template-columns: 1fr; }
+
+  /* Typography */
+  .hero-title { letter-spacing: -2px; }
+  .chapter-title { font-size: 1.6rem; }
+  .ch-title { font-size: 1.5rem; }
+  .section-title { font-size: 1.8rem; }
+
+  /* Chapter ghost number — hide on mobile, takes space and looks broken */
+  .chapter-num { display: none; }
+
+  /* Chapter dots sidebar — hide on mobile */
+  .chapter-dots { display: none; }
+
+  /* Grids → single column */
+  .concept-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .principle-grid { grid-template-columns: 1fr; }
+
+  /* Framework rows → stack */
+  .framework-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    padding: 1.25rem 0;
+  }
+  .framework-key {
+    font-size: 0.9rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--bd-dim);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Glossary → stack */
+  .glossary-item { grid-template-columns: 1fr; gap: 0.4rem; }
+  .glossary-term { font-size: 0.95rem; border-bottom: 1px solid var(--bd-dim); padding-bottom: 0.4rem; margin-bottom: 0.2rem; }
+
+  /* Sidebar note */
+  .sidebar-note { float: none; width: 100%; margin: 1rem 0; }
+
+  /* Rule cards */
+  .rule-card-header { gap: 0.75rem; }
+  .rule-num { font-size: 1.4rem; min-width: 2rem; }
+  .rule-body-text { padding-left: 0; }
+
+  /* Terminal lines → stack */
+  .terminal-line { flex-direction: column; gap: 0.2rem; }
+  .terminal-key { min-width: unset; max-width: unset; font-size: 0.78rem; }
+  .terminal-val { font-size: 0.82rem; padding-left: 0.5rem; border-left: 1px solid var(--bd-dim); }
+
+  /* Pull quote */
+  .pull-quote { padding: 1rem 1.25rem; }
+  .pull-quote::before { font-size: 3rem; top: -0.25rem; left: 0.75rem; }
+  .pull-quote-text { font-size: 1.05rem; }
+
+  /* Hero stats */
+  .hero-stats { max-width: 100%; }
+  .hero-stat { padding: 1rem 0.75rem; }
+  .hero-stat-val { font-size: 1.6rem; }
+
+  /* Body text */
+  .body-text { font-size: 1rem; line-height: 1.85; }
+  .section-body { font-size: 0.95rem; }
+
+  /* Synthesis banner */
+  .synthesis-banner { padding: 2rem 1.25rem; }
+
+  /* Book section headers */
+  .module-title { font-size: 1.6rem; }
+  .module-desc { font-size: 0.9rem; }
+
+  /* Hero corner labels — hide on mobile */
+  .hero-corner { display: none; }
+
+  /* Back to top */
+  #back-top { bottom: 1.25rem; right: 1.25rem; width: 36px; height: 36px; }
+
+  /* TOC chapter pills — wrap better */
+  .toc-chapters { gap: 0.3rem; }
+
+  /* Verdict card stamp — reposition */
+  .verdict-stamp { position: static; transform: none; margin-bottom: 1rem; display: inline-block; }
+
+  /* Section header */
+  .section-header { flex-wrap: wrap; gap: 0.75rem; }
+  .section-rule { display: none; }
+}
+
+/* ---- BREAKPOINT: PHONE ONLY ---- */
 @media (max-width: 480px) {
+
+  /* Hero */
+  .hero-title { letter-spacing: -1px; }
   .hero-stats { flex-direction: column; }
   .hero-stat { border-right: none; border-bottom: 1px solid var(--bd); }
+  .hero-cta { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+
+  /* Stat row full width */
+  .stat-row { grid-template-columns: 1fr; }
+
+  /* Nav right — tighten */
+  .nav-right { gap: 0.5rem; }
+  .progress-ring { display: none; }
+
+  /* Hero desc */
+  .hero-desc { font-size: 0.95rem; }
+
+  /* Reading progress thicker on mobile */
+  #reading-progress { height: 3px; }
+
+  /* Concept cells */
+  .concept-cell { padding: 1.25rem; }
+
+  /* Rule card */
+  .rule-card { padding: 1rem 1.25rem; }
+  .rule-body.expanded-body { padding-top: 1rem; }
+
+  /* Chapter header */
+  .chapter-header { padding: 2rem 0 1.5rem; }
+
+  /* Quiz */
+  .quiz-block { padding: 1.25rem; }
+  .quiz-question { font-size: 1.05rem; }
+  .quiz-option { padding: 0.75rem 1rem; font-size: 0.88rem; }
+
+  /* Framework body */
+  .framework-body { padding: 1rem 1.25rem; }
+
+  /* Glossary */
+  .glossary-item { padding: 1rem 0; }
 }
 
-/* HIGHLIGHT on hover for body text links */
+/* ---- HIGHLIGHT on hover for body text links ---- */
 .inline-link {
   color: var(--gold-light);
   border-bottom: 1px solid var(--gold);
@@ -1726,11 +2014,84 @@ mark {
           stroke-dasharray="69.1" stroke-dashoffset="69.1" id="progress-circle"/>
       </svg>
     </div>
+    <button id="mobile-menu-btn" onclick="openMobileMenu()" aria-label="Open menu">☰</button>
   </div>
 </nav>
 
 <!-- Reading progress bar -->
 <div id="reading-progress"><div id="reading-progress-fill"></div></div>
+
+<!-- ============ MOBILE DRAWER ============ -->
+<div id="mobile-drawer">
+  <div class="mobile-drawer-backdrop" onclick="closeMobileMenu()"></div>
+  <div class="mobile-drawer-panel">
+    <div class="mobile-drawer-head">
+      <div class="mobile-drawer-logo">HBS Black Book</div>
+      <button class="mobile-drawer-close" onclick="closeMobileMenu()">✕</button>
+    </div>
+    <div class="mobile-drawer-body">
+
+      <div class="mobile-nav-section">Navigate</div>
+      <button class="mobile-nav-link special" onclick="mobileNav('toc')">
+        <span class="mobile-nav-link-num">00</span>Contents & Archive
+      </button>
+
+      <div class="mobile-drawer-divider"></div>
+      <div class="mobile-nav-section">Book I — Broughton</div>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-hbs-machine')">
+        <span class="mobile-nav-link-num">01</span>The HBS Machine
+      </button>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-finance')">
+        <span class="mobile-nav-link-num">02</span>Finance & Numbers
+      </button>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-strategy')">
+        <span class="mobile-nav-link-num">03</span>Strategy
+      </button>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-leadership')">
+        <span class="mobile-nav-link-num">04</span>Leadership
+      </button>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-marketing')">
+        <span class="mobile-nav-link-num">05</span>Marketing
+      </button>
+      <button class="mobile-nav-link b1" onclick="mobileNav('ch-ethics')">
+        <span class="mobile-nav-link-num">06</span>Ethics & Verdict
+      </button>
+
+      <div class="mobile-drawer-divider"></div>
+      <div class="mobile-nav-section">Book II — McCormack</div>
+      <button class="mobile-nav-link b2" onclick="mobileNav('ch-people')">
+        <span class="mobile-nav-link-num">07</span>Reading People
+      </button>
+      <button class="mobile-nav-link b2" onclick="mobileNav('ch-selling')">
+        <span class="mobile-nav-link-num">08</span>Selling
+      </button>
+      <button class="mobile-nav-link b2" onclick="mobileNav('ch-negotiation')">
+        <span class="mobile-nav-link-num">09</span>Negotiation
+      </button>
+      <button class="mobile-nav-link b2" onclick="mobileNav('ch-running')">
+        <span class="mobile-nav-link-num">10</span>Running Things
+      </button>
+      <button class="mobile-nav-link b2" onclick="mobileNav('ch-timing')">
+        <span class="mobile-nav-link-num">11</span>Timing & Power
+      </button>
+
+      <div class="mobile-drawer-divider"></div>
+      <div class="mobile-nav-section">Final</div>
+      <button class="mobile-nav-link special" onclick="mobileNav('synthesis-section')">
+        <span class="mobile-nav-link-num">★</span>Synthesis
+      </button>
+      <button class="mobile-nav-link special" onclick="mobileNav('glossary-section')">
+        <span class="mobile-nav-link-num">GL</span>Glossary
+      </button>
+
+    </div>
+    <div class="mobile-drawer-actions">
+      <button class="mobile-action-btn" onclick="openSearch(); closeMobileMenu();">⌕ Search</button>
+      <button class="mobile-action-btn" onclick="toggleTheme(); closeMobileMenu();">☽ Theme</button>
+      <button class="mobile-action-btn" onclick="scrollTo(0,0); closeMobileMenu();">↑ Top</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ SEARCH OVERLAY ============ -->
 <div id="search-overlay">
@@ -3022,6 +3383,25 @@ function goToSection(id) {
 function scrollToSection(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ---- MOBILE MENU ----
+function openMobileMenu() {
+  document.getElementById('mobile-drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobile-drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function mobileNav(id) {
+  closeMobileMenu();
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 350);
 }
 </script>
 
