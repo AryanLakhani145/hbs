@@ -1,0 +1,2917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The HBS Black Book — everything taught and untaught at Harvard Business School, distilled into a complete field manual.">
+<title>The HBS Black Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --ink: #0c0b09;
+  --ink-2: #141210;
+  --ink-3: #1c1a17;
+  --ink-4: #252220;
+  --gold: #c8960c;
+  --gold-light: #e8b84b;
+  --gold-pale: #f5d98a;
+  --gold-glow: rgba(200,150,12,0.12);
+  --gold-glow-2: rgba(200,150,12,0.06);
+  --red: #b5341c;
+  --red-light: #d45535;
+  --parchment: #f0e8d4;
+  --parchment-2: #e8dcc4;
+  --cream: #faf6ee;
+  --text-primary: #ede5d0;
+  --text-secondary: #a89878;
+  --text-muted: #5c5040;
+  --border: rgba(200,150,12,0.15);
+  --border-dim: rgba(200,150,12,0.06);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-body: 'EB Garamond', Georgia, serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink-2); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+/* ============================================================
+   INTRO SCREEN
+   ============================================================ */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: var(--ink);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+#intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.intro-stamp {
+  width: 90px; height: 90px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  animation: stamp-pulse 2s ease-in-out infinite;
+  position: relative;
+}
+
+.intro-stamp::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--gold-light);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.stamp-inner {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: -1px;
+}
+
+@keyframes stamp-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,150,12,0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(200,150,12,0); }
+}
+
+.intro-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  color: var(--gold-light);
+  text-align: center;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.intro-sub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.intro-bar {
+  width: 200px; height: 1px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-bar-fill {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: bar-sweep 1.5s ease forwards 0.5s;
+}
+
+@keyframes bar-sweep { to { left: 100%; } }
+
+.intro-loading {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  animation: blink 1s ease infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: 56px;
+  background: rgba(12,11,9,0.96);
+  border-bottom: 1px solid var(--border-dim);
+  backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  transform: translateY(-100%);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#nav.visible { transform: translateY(0); }
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--gold);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.nav-logo-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.nav-center {
+  display: flex;
+  gap: 0;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  border: none; background: none;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; right: 50%;
+  height: 1px;
+  background: var(--gold);
+  transition: left 0.2s, right 0.2s;
+}
+
+.nav-link:hover { color: var(--text-primary); }
+.nav-link:hover::after, .nav-link.active::after { left: 1rem; right: 1rem; }
+.nav-link.active { color: var(--gold-light); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#search-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#search-btn:hover { border-color: var(--gold-light); color: var(--gold-light); }
+
+.progress-ring {
+  width: 28px; height: 28px;
+  position: relative;
+}
+
+.progress-ring svg { transform: rotate(-90deg); }
+.progress-ring circle { transition: stroke-dashoffset 0.5s ease; }
+
+/* ============================================================
+   SEARCH OVERLAY
+   ============================================================ */
+#search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12,11,9,0.95);
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 8rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+#search-overlay.open { opacity: 1; visibility: visible; }
+
+.search-box {
+  width: 100%;
+  max-width: 600px;
+  padding: 0 2rem;
+}
+
+.search-input-wrap {
+  position: relative;
+  border-bottom: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-icon {
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0.6;
+}
+
+#search-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  padding: 0.75rem 0;
+  width: 100%;
+  font-style: italic;
+}
+
+#search-input::placeholder { color: var(--text-muted); }
+
+#search-close {
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+#search-close:hover { color: var(--text-primary); }
+
+#search-results {
+  margin-top: 2rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-result-item:hover { padding-left: 1rem; }
+
+.search-result-tag {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.search-result-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.search-result-preview {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  line-height: 1.5;
+}
+
+mark {
+  background: var(--gold-glow);
+  color: var(--gold-light);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+#main { opacity: 0; transition: opacity 0.8s ease 0.3s; }
+#main.visible { opacity: 1; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 2rem 4rem;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(200,150,12,0.05) 0%, transparent 70%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(200,150,12,0.02) 60px,
+      rgba(200,150,12,0.02) 61px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(200,150,12,0.02) 60px,
+      rgba(200,150,12,0.02) 61px
+    );
+}
+
+.hero-corner {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hero-corner.tl { top: 5rem; left: 2rem; }
+.hero-corner.tr { top: 5rem; right: 2rem; text-align: right; }
+.hero-corner.bl { bottom: 2rem; left: 2rem; }
+.hero-corner.br { bottom: 2rem; right: 2rem; text-align: right; }
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 900;
+  line-height: 0.9;
+  color: var(--parchment);
+  letter-spacing: -3px;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.hero-title .word-book {
+  display: block;
+  font-size: clamp(4rem, 14vw, 10rem);
+  letter-spacing: -6px;
+  line-height: 0.85;
+  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 50%, var(--gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-rule {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  margin: 2rem auto;
+}
+
+.hero-desc {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 550px;
+  margin: 0 auto 3rem;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  max-width: 480px;
+  margin: 0 auto 3rem;
+}
+
+.hero-stat {
+  flex: 1;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+
+.hero-stat:last-child { border-right: none; }
+
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.9rem 2rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-6px)} }
+
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); }
+.scroll-text { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.3em; color: var(--text-muted); text-transform: uppercase; }
+
+/* ============================================================
+   TABLE OF CONTENTS
+   ============================================================ */
+#toc {
+  padding: 6rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--parchment);
+  line-height: 1;
+}
+
+.section-title em { font-style: italic; color: var(--gold-light); }
+
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border-dim);
+}
+
+.toc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-dim);
+}
+
+.toc-item {
+  background: var(--ink-2);
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.toc-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background 0.3s;
+}
+
+.toc-item:hover { background: var(--ink-3); }
+.toc-item.book-1:hover::before, .toc-item.book-1.active::before { background: var(--gold); }
+.toc-item.book-2:hover::before, .toc-item.book-2.active::before { background: var(--red); }
+
+.toc-item.active { background: var(--ink-3); }
+
+.toc-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.book-1 .toc-label { color: var(--gold); }
+.book-2 .toc-label { color: var(--red-light); }
+
+.toc-name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.toc-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.toc-chapters {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.toc-chapter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  padding: 0.2rem 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.book-1 .toc-chapter-pill { border: 1px solid rgba(200,150,12,0.2); color: var(--text-muted); }
+.book-2 .toc-chapter-pill { border: 1px solid rgba(181,52,28,0.2); color: var(--text-muted); }
+
+/* ============================================================
+   CONTENT AREA
+   ============================================================ */
+#content {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2rem 2rem 8rem;
+}
+
+/* ============================================================
+   CHAPTER
+   ============================================================ */
+.chapter-block {
+  margin-bottom: 5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.chapter-block.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chapter-header {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border-dim);
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.chapter-book-tag {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.book-1-tag { color: var(--gold); }
+.book-2-tag { color: var(--red-light); }
+
+.chapter-book-tag::before {
+  content: '';
+  width: 20px; height: 1px;
+}
+
+.book-1-tag::before { background: var(--gold); }
+.book-2-tag::before { background: var(--red-light); }
+
+.chapter-num {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--ink-4);
+  position: absolute;
+  right: 0;
+  top: 1rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.chapter-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--parchment);
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  max-width: 85%;
+}
+
+.chapter-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* ============================================================
+   CONTENT ELEMENTS
+   ============================================================ */
+.body-text {
+  font-size: 1.08rem;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.body-text strong {
+  color: var(--parchment);
+  font-weight: 500;
+}
+
+.body-text em {
+  color: var(--gold-light);
+  font-style: italic;
+}
+
+/* PULL QUOTE */
+.pull-quote {
+  margin: 2.5rem 0;
+  padding: 2rem 2.5rem;
+  border-left: 3px solid var(--gold);
+  background: var(--gold-glow-2);
+  position: relative;
+}
+
+.pull-quote::before {
+  content: '"';
+  font-family: var(--font-display);
+  font-size: 5rem;
+  color: var(--gold);
+  opacity: 0.2;
+  position: absolute;
+  top: -0.5rem;
+  left: 1.5rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.pull-quote-text {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--parchment);
+  line-height: 1.7;
+  position: relative;
+}
+
+.pull-quote-attr {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 0.75rem;
+  display: block;
+}
+
+/* Red pull quote variant */
+.pull-quote.red-variant {
+  border-left-color: var(--red);
+  background: rgba(181,52,28,0.05);
+}
+
+.pull-quote.red-variant::before { color: var(--red); }
+
+/* RULE CARD */
+.rule-card {
+  background: var(--ink-3);
+  border: 1px solid var(--border-dim);
+  padding: 1.5rem 2rem;
+  margin: 1rem 0;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+
+.rule-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold-glow-2);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.rule-card:hover { border-color: var(--border); }
+.rule-card:hover::after { opacity: 1; }
+
+.rule-card.expanded { border-color: var(--gold); }
+.rule-card.expanded::after { opacity: 1; }
+
+.rule-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.rule-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--gold);
+  opacity: 0.3;
+  min-width: 2.5rem;
+  line-height: 1;
+}
+
+.rule-content { flex: 1; }
+
+.rule-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+}
+
+.rule-preview {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.rule-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--gold);
+  min-width: 60px;
+  text-align: right;
+  padding-top: 0.2rem;
+  transition: transform 0.3s;
+}
+
+.rule-card.expanded .rule-toggle { transform: rotate(180deg); }
+
+.rule-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s;
+}
+
+.rule-card.expanded .rule-body { max-height: 2000px; padding-top: 1.5rem; }
+
+.rule-body-text {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  padding-left: 3.75rem;
+  border-top: 1px solid var(--border-dim);
+  padding-top: 1.25rem;
+}
+
+.rule-body-text strong { color: var(--parchment); }
+
+/* RED variant for book 2 */
+.rule-card.red { }
+.rule-card.red.expanded { border-color: var(--red); }
+.rule-card.red .rule-num { color: var(--red-light); }
+.rule-card.red .rule-toggle { color: var(--red-light); }
+.rule-card.red.expanded::after { background: rgba(181,52,28,0.04); opacity: 1; }
+
+/* CONCEPT GRID */
+.concept-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-dim);
+  margin: 2rem 0;
+}
+
+.concept-cell {
+  background: var(--ink-2);
+  padding: 1.75rem;
+  transition: background 0.2s;
+}
+
+.concept-cell:hover { background: var(--ink-3); }
+
+.concept-tag {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.concept-tag.red { color: var(--red-light); }
+
+.concept-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.concept-body {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.concept-body strong { color: var(--text-secondary); }
+
+/* TERMINAL / FORMULA BOX */
+.terminal-box {
+  background: #080807;
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  margin: 2rem 0;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.terminal-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.td-red { background: #ff5f57; }
+.td-yellow { background: #ffbd2e; }
+.td-green { background: #28c841; }
+
+.terminal-title {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
+.terminal-line {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  align-items: flex-start;
+}
+
+.terminal-key { color: var(--gold-light); min-width: 140px; flex-shrink: 0; }
+.terminal-key.red { color: #e87060; }
+.terminal-val { color: var(--text-secondary); }
+
+/* STAT ROW */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-dim);
+  margin: 2rem 0;
+}
+
+.stat-cell {
+  background: var(--ink-2);
+  padding: 1.75rem;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+
+.stat-num.red { color: var(--red-light); }
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+  display: block;
+  line-height: 1.5;
+}
+
+/* CHAPTER DIVIDER */
+.chapter-divider {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 4rem 0;
+}
+
+.divider-line { flex: 1; height: 1px; background: var(--border-dim); }
+
+.divider-ornament {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0.4;
+}
+
+/* QUIZ BLOCK */
+.quiz-block {
+  background: var(--ink-3);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin: 2.5rem 0;
+  position: relative;
+}
+
+.quiz-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.quiz-label::before {
+  content: '◆';
+  font-size: 0.5rem;
+}
+
+.quiz-question {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--parchment);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.quiz-option {
+  background: none;
+  border: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.quiz-option:hover { border-color: var(--border); color: var(--parchment); background: var(--ink-4); }
+.quiz-option.correct { border-color: #4caf50; background: rgba(76,175,80,0.08); color: #81c784; }
+.quiz-option.wrong { border-color: var(--red); background: rgba(181,52,28,0.08); color: #e07060; }
+.quiz-option.reveal { border-color: var(--gold); background: var(--gold-glow); color: var(--gold-light); }
+.quiz-option[disabled] { cursor: default; }
+
+.quiz-opt-letter {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.5;
+  min-width: 1.2rem;
+}
+
+.quiz-feedback {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  display: none;
+}
+
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: rgba(76,175,80,0.08); color: #81c784; border-left: 2px solid #4caf50; }
+.quiz-feedback.wrong { background: rgba(181,52,28,0.08); color: #e07060; border-left: 2px solid var(--red); }
+
+/* FRAMEWORK BOX */
+.framework-box {
+  border: 1px solid var(--border);
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.framework-title-bar {
+  background: var(--gold-glow);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.framework-title-bar.red {
+  background: rgba(181,52,28,0.05);
+  color: var(--red-light);
+}
+
+.framework-body { padding: 1.5rem; }
+
+.framework-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-dim);
+  align-items: start;
+}
+
+.framework-row:last-child { border-bottom: none; }
+
+.framework-key {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.framework-key.red { color: #e87060; }
+
+.framework-val {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
+}
+
+.framework-val strong { color: var(--parchment); }
+
+/* LESSON TAG */
+.lesson-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.lesson-tag.gold { border: 1px solid var(--gold); color: var(--gold); }
+.lesson-tag.red { border: 1px solid var(--red); color: var(--red-light); }
+
+/* SIDEBAR NOTE */
+.sidebar-note {
+  float: right;
+  width: 200px;
+  margin: 0 0 1.5rem 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--ink-3);
+  border-right: 2px solid var(--gold);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.sidebar-note::before {
+  content: 'NOTE';
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* READING PROGRESS */
+#reading-progress {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ink-3);
+  z-index: 400;
+}
+
+#reading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+/* BACK TO TOP */
+#back-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 40px; height: 40px;
+  background: var(--ink-3);
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+  z-index: 300;
+}
+
+#back-top.visible { opacity: 1; transform: translateY(0); }
+#back-top:hover { background: var(--gold-glow); border-color: var(--gold); }
+
+/* BOOK SWITCHER */
+.book-switcher {
+  display: flex;
+  gap: 0;
+  margin-bottom: 4rem;
+  border: 1px solid var(--border-dim);
+  max-width: 500px;
+  margin: 0 auto 4rem;
+}
+
+.book-switch-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1.25rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: all 0.3s;
+  position: relative;
+  text-align: center;
+}
+
+.book-switch-btn::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.3s;
+}
+
+.book-switch-btn:hover { color: var(--text-secondary); background: var(--ink-3); }
+.book-switch-btn.active.b1 { color: var(--gold); background: var(--gold-glow-2); }
+.book-switch-btn.active.b1::before { background: var(--gold); }
+.book-switch-btn.active.b2 { color: var(--red-light); background: rgba(181,52,28,0.05); }
+.book-switch-btn.active.b2::before { background: var(--red); }
+
+.book-content { display: none; }
+.book-content.active { display: block; }
+
+/* CHAPTER NAV DOTS */
+.chapter-dots {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 200;
+}
+
+.chapter-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.chapter-dot:hover { background: var(--gold); width: 8px; height: 8px; }
+.chapter-dot.active { background: var(--gold); }
+.chapter-dot.active-red { background: var(--red-light); }
+
+.chapter-dot-tip {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink-3);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.chapter-dot:hover .chapter-dot-tip { opacity: 1; }
+
+/* ANNOTATIONS */
+.annotation {
+  position: relative;
+  display: inline;
+  border-bottom: 1px dashed var(--gold);
+  cursor: help;
+  color: var(--gold-light);
+}
+
+.annotation-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink-3);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  width: 220px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.annotation:hover .annotation-tip { display: block; }
+
+/* SYNTHESIS SECTION */
+.synthesis-banner {
+  background: linear-gradient(135deg, var(--ink-3) 0%, var(--ink-4) 100%);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  padding: 3rem;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.synthesis-icon {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--gold);
+  opacity: 0.3;
+  margin-bottom: 1rem;
+}
+
+.synthesis-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: 0.75rem;
+}
+
+.synthesis-body {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+/* GLOSSARY */
+.glossary-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border-dim);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.glossary-term {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.glossary-def {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* VERDICT CARD */
+.verdict-card {
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.verdict-stamp {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border: 2px solid;
+  transform: rotate(3deg);
+  opacity: 0.6;
+}
+
+.verdict-stamp.gold { color: var(--gold); border-color: var(--gold); }
+.verdict-stamp.red { color: var(--red); border-color: var(--red); }
+
+.verdict-q {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--parchment);
+  margin-bottom: 1rem;
+}
+
+.verdict-body {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.9;
+}
+
+/* FOOTER */
+#footer {
+  border-top: 1px solid var(--border-dim);
+  padding: 3rem 2rem;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.footer-text {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 2;
+}
+
+/* ANIMATIONS */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fade-up 0.7s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+.delay-5 { animation-delay: 0.5s; opacity: 0; }
+.delay-6 { animation-delay: 0.6s; opacity: 0; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .concept-grid { grid-template-columns: 1fr; }
+  .framework-row { grid-template-columns: 1fr; gap: 0.5rem; }
+  .stat-row { grid-template-columns: 1fr; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .glossary-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  .sidebar-note { float: none; width: 100%; margin: 1rem 0; }
+  .chapter-dots { display: none; }
+  .nav-center { display: none; }
+  .hero-title { letter-spacing: -2px; }
+}
+
+@media (max-width: 480px) {
+  .hero-stats { flex-direction: column; }
+  .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+/* HIGHLIGHT on hover for body text links */
+.inline-link {
+  color: var(--gold-light);
+  border-bottom: 1px solid var(--gold);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.inline-link:hover { color: var(--parchment); }
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO SCREEN ============ -->
+<div id="intro">
+  <div class="intro-stamp">
+    <div class="stamp-inner">HBS</div>
+  </div>
+  <div class="intro-title">The Black Book</div>
+  <div class="intro-sub">Loading the complete field manual</div>
+  <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+  <div class="intro-loading" id="intro-loading">Initializing...</div>
+</div>
+
+<!-- ============ NAVIGATION ============ -->
+<nav id="nav">
+  <div class="nav-logo" onclick="scrollTo(0,0)">
+    <div class="nav-logo-dot"></div>
+    HBS Black Book
+  </div>
+  <div class="nav-center">
+    <button class="nav-link active" onclick="scrollToSection('toc')">Contents</button>
+    <button class="nav-link" onclick="scrollToSection('ch-hbs-machine')">Book I</button>
+    <button class="nav-link" onclick="scrollToSection('ch-people')">Book II</button>
+    <button class="nav-link" onclick="scrollToSection('synthesis-section')">Synthesis</button>
+    <button class="nav-link" onclick="scrollToSection('glossary-section')">Glossary</button>
+  </div>
+  <div class="nav-right">
+    <button id="search-btn" onclick="openSearch()">⌘ Search</button>
+    <div class="progress-ring" title="Reading progress">
+      <svg width="28" height="28" viewBox="0 0 28 28">
+        <circle cx="14" cy="14" r="11" fill="none" stroke="#1c1a17" stroke-width="2"/>
+        <circle cx="14" cy="14" r="11" fill="none" stroke="#c8960c" stroke-width="2"
+          stroke-dasharray="69.1" stroke-dashoffset="69.1" id="progress-circle"/>
+      </svg>
+    </div>
+  </div>
+</nav>
+
+<!-- Reading progress bar -->
+<div id="reading-progress"><div id="reading-progress-fill"></div></div>
+
+<!-- ============ SEARCH OVERLAY ============ -->
+<div id="search-overlay">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Search concepts, rules, frameworks…" autocomplete="off">
+      <button id="search-close" onclick="closeSearch()">✕</button>
+    </div>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- ============ CHAPTER NAVIGATION DOTS ============ -->
+<div class="chapter-dots" id="chapter-dots"></div>
+
+<!-- ============ MAIN CONTENT ============ -->
+<div id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-corner tl">EST. 1908 · CAMBRIDGE, MA</div>
+    <div class="hero-corner tr">FIELD MANUAL · VOL. I & II</div>
+    <div class="hero-corner bl">BROUGHTON · McCORMACK</div>
+    <div class="hero-corner br">COMPLETE EDITION</div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow fade-in delay-1">The Complete Knowledge Archive</div>
+      <h1 class="hero-title fade-in delay-2">
+        The HBS
+        <span class="word-book">Black Book</span>
+      </h1>
+      <div class="hero-rule fade-in delay-3"></div>
+      <p class="hero-desc fade-in delay-4">
+        Everything taught inside Harvard Business School's walls — and everything they deliberately leave out. Two books. Two perspectives. One complete education in how business actually works.
+      </p>
+      <div class="hero-stats fade-in delay-5">
+        <div class="hero-stat">
+          <span class="hero-stat-val">2</span>
+          <span class="hero-stat-label">Landmark Books</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val">40+</span>
+          <span class="hero-stat-label">Core Concepts</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val">∞</span>
+          <span class="hero-stat-label">Applicable Years</span>
+        </div>
+      </div>
+      <div class="hero-cta fade-in delay-6">
+        <button class="btn-primary" onclick="scrollToSection('toc')">Enter the Archive</button>
+        <button class="btn-secondary" onclick="scrollToSection('synthesis-section')">Skip to Synthesis</button>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <div class="scroll-text">Scroll</div>
+    </div>
+  </section>
+
+  <!-- TABLE OF CONTENTS -->
+  <section id="toc" style="padding: 6rem 2rem; max-width: 1000px; margin: 0 auto;">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <h2 class="section-title">The <em>Archive</em></h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="toc-grid">
+      <div class="toc-item book-1" onclick="scrollToSection('ch-hbs-machine')">
+        <div class="toc-label">Book I · 2008 · Philip Delves Broughton</div>
+        <div class="toc-name">What They Teach You at Harvard Business School</div>
+        <div class="toc-desc">An insider account of two years inside HBS — the cases, the frameworks, the extraordinary people, and the uncomfortable truth about what a $200,000 MBA actually gives you.</div>
+        <div class="toc-chapters">
+          <span class="toc-chapter-pill">The Case Method</span>
+          <span class="toc-chapter-pill">Finance</span>
+          <span class="toc-chapter-pill">Strategy</span>
+          <span class="toc-chapter-pill">Leadership</span>
+          <span class="toc-chapter-pill">Marketing</span>
+          <span class="toc-chapter-pill">Ethics</span>
+          <span class="toc-chapter-pill">The MBA Mind</span>
+        </div>
+      </div>
+      <div class="toc-item book-2" onclick="scrollToSection('ch-people')">
+        <div class="toc-label">Book II · 1984 · Mark H. McCormack</div>
+        <div class="toc-name">What They Don't Teach You at Harvard Business School</div>
+        <div class="toc-desc">McCormack built IMG from a handshake with Arnold Palmer into a billion-dollar empire. The distilled street intelligence of a man who operated at the highest levels of deal-making for four decades.</div>
+        <div class="toc-chapters">
+          <span class="toc-chapter-pill">Reading People</span>
+          <span class="toc-chapter-pill">Selling</span>
+          <span class="toc-chapter-pill">Negotiation</span>
+          <span class="toc-chapter-pill">Running Things</span>
+          <span class="toc-chapter-pill">Timing & Power</span>
+          <span class="toc-chapter-pill">Street Edge</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       BOOK I
+       ========================================================= -->
+  <section id="book1-content" style="padding: 2rem 0;">
+    <div style="max-width: 780px; margin: 0 auto; padding: 0 2rem;">
+      <div style="text-align:center; margin-bottom: 3rem;">
+        <div style="font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.75rem;">Book I of II</div>
+        <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 900; color: var(--parchment); line-height: 1.1; margin-bottom: 0.5rem;">What They <em style="color:var(--gold-light); font-style:italic;">Teach</em> You</h2>
+        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em;">Philip Delves Broughton · Harvard Business School · Class of 2006</div>
+        <div style="width: 60px; height: 1px; background: var(--gold); margin: 2rem auto; opacity: 0.4;"></div>
+        <p class="body-text" style="max-width: 560px; margin: 0 auto;">Broughton was a correspondent for the Daily Telegraph when he decided to apply to HBS almost on a whim. He got in. What he found — and what he wrote about — is the most honest account of what a top-tier MBA actually does to a person, and what it genuinely delivers.</p>
+      </div>
+    </div>
+
+    <div id="content">
+
+      <!-- CH 1: THE MACHINE -->
+      <div class="chapter-block" id="ch-hbs-machine" data-chapter="The HBS Machine" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 1</div>
+          <div class="chapter-num">01</div>
+          <h3 class="chapter-title">The Machine You're Buying Into</h3>
+          <div class="chapter-subtitle">What HBS actually is, how it works, and what you're really paying $200,000 for</div>
+        </div>
+
+        <div class="lesson-tag gold">The Foundation</div>
+
+        <p class="body-text">Harvard Business School was founded in 1908 with a radical idea: that management could be taught as a profession, the way law or medicine was taught. It was a controversial bet. Most people believed business competence was innate — you either had the instincts or you didn't. HBS said: we can build it.</p>
+
+        <p class="body-text">Today, it is the world's most mythologized institution of business learning. And here is the critical distinction Broughton makes immediately: HBS is a <strong>credentialing machine</strong> as much as it is a knowledge machine. Getting in already signals that you are smart, driven, and connected enough to clear an extraordinarily competitive filter. What happens after you're in is partly education — and partly confirmation bias working relentlessly in your favor.</p>
+
+        <div class="stat-row">
+          <div class="stat-cell"><span class="stat-num">~900</span><span class="stat-label">Students per class</span></div>
+          <div class="stat-cell"><span class="stat-num">500+</span><span class="stat-label">Cases in two years</span></div>
+          <div class="stat-cell"><span class="stat-num">$200K</span><span class="stat-label">Total cost · 2006</span></div>
+        </div>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">The HBS brand does not just open doors. It makes people assume you deserve to walk through them — before you've said a word.</div>
+          <span class="pull-quote-attr">— Broughton's core observation</span>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">01</div>
+            <div class="rule-content">
+              <div class="rule-name">The Case Method — HBS's Core Technology</div>
+              <div class="rule-preview">Every class is a real business situation. You form a judgment before you enter the room. Then you defend it in front of 90 people.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>How it works:</strong> Each class is built around a real business situation — 15 to 25 pages of dense, carefully researched narrative about an actual company facing an actual decision. You read it the night before. You form a position. The next morning, a professor cold-calls you in front of 90 peers, and you defend or collapse.
+              <br><br>
+              <strong>The genius:</strong> You learn by deciding, not by being told. The professor almost never gives you the answer. The answer — if it exists — emerges through argument, contradiction, and collective stress-testing. This trains a very specific cognitive muscle: forming confident judgments under ambiguity, with incomplete information, under social pressure. That is exactly what senior executives do every day.
+              <br><br>
+              <strong>The danger:</strong> The case method rewards articulation over accuracy. It rewards sounding decisive over being right. Some of the most brilliant case performers at HBS went on to spectacular failures. Some of the quiet ones became the most consequential leaders of their generation. The school knows this and acknowledges it imperfectly.
+            </div>
+          </div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">02</div>
+            <div class="rule-content">
+              <div class="rule-name">The Shadow Curriculum Nobody Puts in the Brochure</div>
+              <div class="rule-preview">Beyond Finance, Strategy, and Marketing — there's a second curriculum that runs invisibly beneath the official one.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>Network as Infrastructure:</strong> Your 900 classmates will scatter to every corner of the institutional economy. Ten years later, your cold call to a Goldman partner is a warm call because you sat three rows behind her in Finance. The relationship network accumulated over two years is the single most durable and valuable thing the school produces.
+              <br><br>
+              <strong>Manufactured Confidence:</strong> HBS produces certainty. You graduate believing you can lead anything — a startup, a hospital, a country. This is partly the school's greatest gift and partly its most dangerous product. The confidence is real. The calibration of that confidence to actual competence is inconsistent.
+              <br><br>
+              <strong>Pattern Recognition at Scale:</strong> 500 cases means your brain has matched patterns across 500 different industries, crises, and decisions. A supply chain crisis in Indonesian textiles rhymes with one in pharmaceutical distribution. A new situation snaps into a recognizable category. You become fast to competence in unfamiliar domains. This is genuinely valuable and genuinely hard to get any other way.
+              <br><br>
+              <strong>The Brand as Perpetual Signal:</strong> Long after graduation, the two letters on your résumé continue doing work. Board committees, search firms, venture funds — they all run on cognitive shortcuts. "Harvard MBA" is a shortcut that opens rooms, activates trust, and greases introductions in ways that pure competence, without the signal, would not.
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-label">Knowledge Check</div>
+          <div class="quiz-question">The Case Method trains a specific cognitive muscle. Which of the following best describes it?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Not quite. Memorization is the opposite of what the case method trains.')"><span class="quiz-opt-letter">A</span> Memorizing industry-specific facts and regulations</button>
+            <button class="quiz-option" onclick="answerQuiz(this, true, 'Correct. The case method forces decisions under ambiguity and social pressure — exactly the conditions senior executives face daily.')"><span class="quiz-opt-letter">B</span> Making confident decisions with incomplete information, under pressure</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Financial modeling is a separate skill taught in Finance modules, not the case method per se.')"><span class="quiz-opt-letter">C</span> Building financial models quickly and accurately</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Presentations are a byproduct, not the core training objective.')"><span class="quiz-opt-letter">D</span> Delivering polished presentations to senior stakeholders</button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- CH 2: FINANCE -->
+      <div class="chapter-block" id="ch-finance" data-chapter="Finance" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 2</div>
+          <div class="chapter-num">02</div>
+          <h3 class="chapter-title">Finance & the Numbers That Don't Lie</h3>
+          <div class="chapter-subtitle">How HBS teaches you to read money — and why most educated people still can't</div>
+        </div>
+
+        <div class="lesson-tag gold">Core Curriculum</div>
+
+        <p class="body-text">The first thing HBS does — week one, before you have settled into your section, before you have learned your professors' names — is make sure every student can read a financial statement. Poet, engineer, army general: it does not matter. <strong>If you cannot read the numbers, you cannot participate.</strong></p>
+
+        <p class="body-text">And not just read them — interrogate them. Numbers do not lie, but they omit. The skill is not knowing what the numbers say. The skill is knowing what they're hiding, what they're assuming, and what question you need to ask to expose the gap between accounting reality and business reality.</p>
+
+        <div class="framework-box">
+          <div class="framework-title-bar">◆ The Three Financial Documents Every Decision-Maker Must Master</div>
+          <div class="framework-body">
+            <div class="framework-row">
+              <div class="framework-key">Income Statement</div>
+              <div class="framework-val">What happened over a period. Revenue flows in, costs flow out, profit (or loss) remains. The top line is revenue. The bottom line is net income. Neither tells you the full story alone. A company can have record revenue and be losing money. A company can have shrinking revenue and be extraordinarily profitable. <strong>Read income statements in context, not in isolation.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Balance Sheet</div>
+              <div class="framework-val">What exists at a point in time. Assets (what you own) on one side; liabilities (what you owe) and equity (what's left for shareholders) on the other. The balance sheet is a snapshot. It tells you whether the company is solvent, how leveraged it is, and how efficiently it's deploying capital. <strong>A healthy income statement on an unhealthy balance sheet is a ticking clock.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Cash Flow Statement</div>
+              <div class="framework-val">The only number that doesn't lie. Cash in minus cash out. A company can be "profitable" by accounting definitions while simultaneously running out of cash — because profit includes non-cash items like depreciation and deferred revenue. Amazon ran cash-negative for years while reporting operating profits. <strong>Companies don't go bankrupt because they're unprofitable. They go bankrupt because they run out of cash.</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="terminal-dot td-red"></div>
+            <div class="terminal-dot td-yellow"></div>
+            <div class="terminal-dot td-green"></div>
+            <div class="terminal-title">Financial Metrics Decoded</div>
+          </div>
+          <div class="terminal-line"><span class="terminal-key">Gross Margin</span><span class="terminal-val">Revenue minus direct cost of goods. Reveals pricing power and production efficiency. High gross margin = room to absorb overhead and still profit.</span></div>
+          <div class="terminal-line"><span class="terminal-key">EBITDA</span><span class="terminal-val">Earnings before interest, taxes, depreciation, amortization. Strips out financing and accounting decisions to show raw operational performance. Used universally in valuation.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Free Cash Flow</span><span class="terminal-val">Operating cash flow minus capital expenditures. The purest measure of value creation. The number Warren Buffett obsesses over.</span></div>
+          <div class="terminal-line"><span class="terminal-key">ROIC</span><span class="terminal-val">Return on invested capital. Is this business generating returns above its cost of capital? If yes, it's creating value. If no, it's destroying it — regardless of what the P&L says.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Working Capital</span><span class="terminal-val">Current assets minus current liabilities. Measures short-term financial health. A company with shrinking working capital is approaching a liquidity squeeze.</span></div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">03</div>
+            <div class="rule-content">
+              <div class="rule-name">The Three Lenses of Valuation</div>
+              <div class="rule-preview">What is a business worth? Three methodologies, each with a different philosophical premise. Professionals use all three to triangulate.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>DCF — Discounted Cash Flow (Intrinsic Value):</strong> Project every dollar of free cash flow the business will generate in the future. Discount those future dollars back to today's value using a rate that reflects the riskiness of the business. Sum them up. That's what the business is worth today if your projections are correct. The problem: tiny changes in your growth rate assumption or discount rate produce wildly different valuations. DCF is philosophically rigorous and practically unreliable. Use it as an anchor, not an oracle.
+              <br><br>
+              <strong>Comparable Company Analysis (Market Value):</strong> What are similar businesses trading at in the public market? If competitors trade at 12× EBITDA and your company generates $50M EBITDA, the market would value you around $600M. This is market-derived and practical — but circular. It assumes the market is correctly pricing those comparable companies, which may or may not be true.
+              <br><br>
+              <strong>Precedent Transaction Analysis (Acquisition Value):</strong> What have acquirers actually paid for similar businesses in recent M&A deals? Buyers pay a control premium — typically 20–40% above market price — to gain operational control. This method gives you the most realistic picture of what someone would actually write you a check for.
+              <br><br>
+              <strong>The professional approach:</strong> Run all three. Where they converge, you have confidence. Where they diverge, you investigate why — the divergence itself is intelligence about the business.
+            </div>
+          </div>
+        </div>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">Accounting profit is an opinion. Cash flow is a fact. Build your analysis around the fact, and use the opinion to understand why the fact looks the way it does.</div>
+          <span class="pull-quote-attr">— Core HBS Finance Principle</span>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">04</div>
+            <div class="rule-content">
+              <div class="rule-name">Capital Structure — How You Finance Changes What You Risk</div>
+              <div class="rule-preview">Debt is cheaper than equity. It's also a fixed obligation. The optimal capital structure maximizes return without making the company fragile.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>Why debt is "cheaper" than equity:</strong> Debt interest is tax-deductible. Equity dividends are not. If your cost of debt is 6% and your tax rate is 30%, the effective cost is 4.2%. Meanwhile, equity investors expect returns of 10–15% minimum. So debt is mathematically cheaper — but only as long as you can service it.
+              <br><br>
+              <strong>The risk tradeoff:</strong> Debt is a fixed obligation. Miss a payment and you're in technical default. Equity is forgiving — you can skip dividends indefinitely without legal consequence. The more debt you carry, the higher your potential equity return (leverage amplifies gains) — and the higher your risk of catastrophic failure (leverage amplifies losses identically).
+              <br><br>
+              <strong>Private Equity as applied science:</strong> PE firms use this asymmetry deliberately. They acquire a business using mostly borrowed money (leveraged buyouts), meaning a small equity slice controls a large asset. If the business generates sufficient cash to service the debt and grows, the equity return is extraordinary. This is not magic — it's financial engineering applied to businesses with predictable, stable cash flows. PE firms love boring, unglamorous businesses for exactly this reason. Exciting, unpredictable businesses cannot reliably service debt. Boring ones can.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CH 3: STRATEGY -->
+      <div class="chapter-block" id="ch-strategy" data-chapter="Strategy" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 3</div>
+          <div class="chapter-num">03</div>
+          <h3 class="chapter-title">Strategy — The War for Position</h3>
+          <div class="chapter-subtitle">Porter, competitive advantage, disruption theory, and why most "strategic plans" are just budgets with ambition attached</div>
+        </div>
+
+        <div class="lesson-tag gold">Core Curriculum</div>
+
+        <p class="body-text">Michael Porter — an HBS professor — invented the modern language of competitive strategy. Before Porter, strategy was largely intuitive: you competed by being better. Porter asked a different question: <em>Why are some industries structurally more profitable than others, regardless of how well individual companies are managed?</em></p>
+
+        <p class="body-text">That question changed everything. The answer is that <strong>industry structure determines the average profitability ceiling</strong>. Being excellent in a structurally awful industry still leaves you fighting for thin margins. Being mediocre in a structurally excellent industry still produces good profits. Choose your battlefield as carefully as you execute within it.</p>
+
+        <div class="framework-box">
+          <div class="framework-title-bar">◆ Porter's Five Forces — The Industry Profitability Map</div>
+          <div class="framework-body">
+            <div class="framework-row">
+              <div class="framework-key">Threat of New Entrants</div>
+              <div class="framework-val">If anyone can enter your market cheaply and easily, competition will erode your margins until they approach zero. High barriers — capital intensity, regulatory licensing, brand loyalty, network effects, patents — protect incumbent profits indefinitely. <strong>The best businesses are the ones newcomers can't copy, even when they can see exactly how profitable it is.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Supplier Power</div>
+              <div class="framework-val">If your suppliers have pricing power over you — because you depend on them more than they depend on you — they extract your margins systematically. Single-source dependency is a structural vulnerability. <strong>Diversify supply or vertically integrate when supplier concentration becomes a strategic risk.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Buyer Power</div>
+              <div class="framework-val">If your customers can walk and your product isn't differentiated enough to retain them, they extract margin through negotiation. Buyer concentration (a few large customers representing most of your revenue) is particularly lethal. <strong>One customer representing 40% of your revenue is not a relationship. It's a hostage situation.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Threat of Substitutes</div>
+              <div class="framework-val">Even if no direct competitor exists, something else might solve the customer's underlying problem differently. Taxis didn't compete with other taxis — Uber didn't build a better taxi. It made the concept of hailing a taxi obsolete. <strong>Always define your competitive threat by the customer's job-to-be-done, not by your product category.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Competitive Rivalry</div>
+              <div class="framework-val">Intense price competition among existing players destroys industry margins for everyone. Stable oligopolies — like commercial aircraft manufacturing (effectively a Boeing-Airbus duopoly) — generate extraordinary profits for decades because both players are rational enough to avoid price wars. <strong>The best competitive environments are those where rivals compete on quality and service, not price.</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-cell">
+            <span class="concept-tag">Generic Strategy 01</span>
+            <div class="concept-name">Cost Leadership</div>
+            <div class="concept-body">Be the lowest-cost producer in your industry. <strong>Walmart. Ryanair. IKEA.</strong> You don't need to be the best — you need to be the cheapest while remaining profitable. Requires relentless operational discipline, economies of scale, and often supply chain ownership. The trap: racing to the bottom when competitors match your cost cuts.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">Generic Strategy 02</span>
+            <div class="concept-name">Differentiation</div>
+            <div class="concept-body">Be so distinct that customers pay a premium rather than accept a substitute. <strong>Apple. Ferrari. LVMH.</strong> The premium must exceed the cost of being different. Differentiation lives in product, brand, experience — but must be <em>perceived</em> as valuable by customers, not just declared valuable by you.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">Generic Strategy 03</span>
+            <div class="concept-name">Focus / Niche</div>
+            <div class="concept-body">Serve a narrow segment so completely that you become the obvious, irreplaceable choice within that niche — even if you can't compete across the whole market. Niche firms often generate higher margins than broad players because they face less competition in their specific sandbox.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">The Trap</span>
+            <div class="concept-name">Stuck in the Middle</div>
+            <div class="concept-body">Companies that attempt cost leadership and differentiation simultaneously — without committing fully to either — end up in no-man's-land. <strong>Not cheap enough for price-sensitive buyers. Not distinctive enough for premium buyers.</strong> This is the graveyard of business school strategic plans that sounded good in the classroom.</div>
+          </div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">05</div>
+            <div class="rule-content">
+              <div class="rule-name">Disruption Theory — Christensen's Uncomfortable Truth</div>
+              <div class="rule-preview">Incumbents rarely get killed by better competitors. They get killed by worse ones who start at the bottom and climb.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              Clayton Christensen — another HBS legend — introduced Disruptive Innovation theory, and it remains the most useful framework for understanding why dominant companies get destroyed by seemingly inferior entrants.
+              <br><br>
+              <strong>The mechanism:</strong> A new entrant enters the market at the low end — serving customers the incumbent has abandoned as unprofitable, with a product that's worse by all existing metrics of quality. The incumbent is rational to ignore this: defending their premium customers is far more profitable in the short term. But the disruptor's cost structure, built for the low end, gradually improves. The technology matures. The product moves upmarket. By the time the incumbent notices the threat, the disruptor has the cost advantages, the customer base, and the technology platform to compete everywhere.
+              <br><br>
+              <strong>Classic patterns:</strong> Digital cameras entered below film quality — then destroyed film. Netflix started with DVD-by-mail (worse than Blockbuster for impulse renters) — then destroyed video rental. Android phones were worse than Nokia's — then made Nokia irrelevant. In every case, the disruptor was initially worse on the incumbent's quality metrics. In every case, the incumbent rationally ignored them until it was too late.
+              <br><br>
+              <strong>The strategic implication:</strong> If you're an incumbent, the threat is not from the competitor who's directly challenging you with a better version of your product. It's from the one building an inferior product for customers you don't care about. If you're a new entrant, the way in is not to build a premium product that competes head-on — it's to serve the market the incumbent has abandoned, then climb.
+            </div>
+          </div>
+        </div>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">Strategy is not a list of initiatives. It's a coherent set of choices about what you will NOT do — and those choices must reinforce each other to create a position competitors cannot easily copy.</div>
+          <span class="pull-quote-attr">— Porter's definition, distilled</span>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-label">Knowledge Check</div>
+          <div class="quiz-question">A company sells premium handmade leather goods at high prices and targets affluent buyers who value craftsmanship. Which of Porter's generic strategies is this?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Cost leadership means being the cheapest. This company is the opposite.')"><span class="quiz-opt-letter">A</span> Cost Leadership</button>
+            <button class="quiz-option" onclick="answerQuiz(this, true, 'Correct. Premium pricing, premium product, premium positioning — classic differentiation strategy. The company earns its margin by being genuinely distinct in the customer\'s mind.')"><span class="quiz-opt-letter">B</span> Differentiation</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Focus/niche is about a narrow segment, not inherently about premium pricing or craftsmanship.')"><span class="quiz-opt-letter">C</span> Focus / Niche</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Stuck in the middle means failing to commit to any strategy — this company has clearly committed.')"><span class="quiz-opt-letter">D</span> Stuck in the Middle</button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- CH 4: LEADERSHIP -->
+      <div class="chapter-block" id="ch-leadership" data-chapter="Leadership" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 4</div>
+          <div class="chapter-num">04</div>
+          <h3 class="chapter-title">Leadership — The Module HBS Can't Fully Teach</h3>
+          <div class="chapter-subtitle">What the school attempts, what it actually delivers, and the dangerous overconfidence it manufactures</div>
+        </div>
+
+        <div class="lesson-tag gold">Hardest Module</div>
+
+        <p class="body-text">Leadership is the module HBS is least equipped to teach — and it knows this. You can teach finance through numbers. You can teach strategy through frameworks. But leadership is <strong>fundamentally about reading and moving other human beings</strong> — and you don't acquire that skill by analyzing cases about Jack Welch or studying Bill George's authentic leadership framework, however good those frameworks are.</p>
+
+        <p class="body-text">HBS teaches leadership by dissecting what great leaders did, reverse-engineering their decisions, and identifying transferable patterns. The implicit assumption: if you understand the pattern, you can replicate the outcome. The problem: context, personality, timing, and chemistry between specific humans are not transferable the way a financial model is.</p>
+
+        <div class="concept-grid">
+          <div class="concept-cell">
+            <span class="concept-tag">Framework</span>
+            <div class="concept-name">Authentic Leadership</div>
+            <div class="concept-body">Bill George's framework — and arguably HBS's most influential leadership export. <strong>Know who you are. Operate from clear values. Build trust through consistency.</strong> Authenticity is not being nice or transparent — it is being predictably, reliably yourself so that people can model you, trust you, and follow you without second-guessing your motives.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">Framework</span>
+            <div class="concept-name">Situational Leadership</div>
+            <div class="concept-body">Different situations demand different styles. A startup in crisis needs <strong>directive, decisive, fast</strong> leadership. A mature organization in stable conditions needs <strong>collaborative, consensus-building, culture-sustaining</strong> leadership. The failure mode — applying the same style regardless of context — is one of the most common ways talented leaders destroy organizations.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">Underrated Insight</span>
+            <div class="concept-name">Managing Upward & Sideways</div>
+            <div class="concept-body">Most people believe leadership is about managing downward — directing your team. The reality: real power in organizations moves laterally and upward. Your relationship with your boss, your peers, your board — these are strategic assets. The executive who is brilliant with their team but invisible to their organization's power structure is perpetually under-resourced.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">Broughton's Warning</span>
+            <div class="concept-name">The Overconfidence Trap</div>
+            <div class="concept-body">HBS's most dangerous product: graduates who are <strong>supremely confident in their own frameworks</strong>. The 2008 financial crisis was designed and executed by people with elite MBAs who were certain their models were right. Epistemic humility — treating your model as a map, not the territory — is the antidote, and HBS teaches it inconsistently.</div>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="terminal-dot td-red"></div>
+            <div class="terminal-dot td-yellow"></div>
+            <div class="terminal-dot td-green"></div>
+            <div class="terminal-title">The HBS Leadership Operating System</div>
+          </div>
+          <div class="terminal-line"><span class="terminal-key">Self-Awareness</span><span class="terminal-val">Know your values, your triggers, your blind spots. Leaders who don't know themselves cannot be known by others — and cannot be trusted.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Vision</span><span class="terminal-val">Articulate a future state that is vivid enough to be motivating and specific enough to be actionable. Vague vision is just management aesthetics.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Communication</span><span class="terminal-val">Make complex things simple. Make abstract things concrete. Make distant things personal. Three different skills that most leaders only partially develop.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Decision Quality</span><span class="terminal-val">Judge yourself on process, not outcome. Good decisions can produce bad outcomes (bad luck). Bad decisions can produce good outcomes (dumb luck). A good process is the only thing you control.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Accountability</span><span class="terminal-val">Own results publicly. Distribute credit generously. Absorb blame that falls within your sphere. This asymmetry builds trust faster than almost any other leadership behavior.</span></div>
+          <div class="terminal-line"><span class="terminal-key">Resilience</span><span class="terminal-val">Failures are information. Process them, extract the lesson, and move. Leaders who treat failure as identity instead of information become paralyzed or defensive at exactly the wrong moments.</span></div>
+        </div>
+      </div>
+
+      <!-- CH 5: MARKETING -->
+      <div class="chapter-block" id="ch-marketing" data-chapter="Marketing" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 5</div>
+          <div class="chapter-num">05</div>
+          <h3 class="chapter-title">Marketing — The Science of Desire</h3>
+          <div class="chapter-subtitle">Customers don't buy what you sell. They buy what it does for them. Understanding the gap is the entire game.</div>
+        </div>
+
+        <div class="lesson-tag gold">Core Curriculum</div>
+
+        <p class="body-text">HBS marketing starts with a question that sounds obvious but isn't: <strong>What is your customer actually buying?</strong> Not what you're selling. What they're buying.</p>
+
+        <p class="body-text">A drill bit manufacturer sells drill bits. Customers don't want drill bits. They want holes in walls. But even deeper: they want hung shelves, which means organized homes, which means control over their space, which means a certain feeling about their life. <strong>The job-to-be-done is the actual unit of competitive analysis</strong> — not the product category. Companies that compete on product features are fighting in a narrow space. Companies that compete on the underlying job can innovate across entirely different delivery mechanisms.</p>
+
+        <div class="framework-box">
+          <div class="framework-title-bar">◆ STP — The Marketing Strategy Framework</div>
+          <div class="framework-body">
+            <div class="framework-row">
+              <div class="framework-key">Segmentation</div>
+              <div class="framework-val">Divide the heterogeneous market into homogeneous groups — people who share characteristics and behaviors. Geographic, demographic, psychographic, behavioral — the more precisely you segment, the more precisely you can serve. <strong>Mass marketing is only viable for commodity products</strong> where differentiation is structurally impossible.</div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Targeting</div>
+              <div class="framework-val">Choose which segments to serve — and explicitly which ones not to serve. The discipline of choosing who you are NOT serving is where most companies fail. Trying to be relevant to everyone makes you unmemorable to anyone. <strong>The segments you decline are as strategically significant as the segments you pursue.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Positioning</div>
+              <div class="framework-val">The mental slot you occupy in your customer's mind. Positioning is not what you do to a product — it's what you do to the prospect's perception. <strong>Volvo owns safety. BMW owns driving. Volvo does not need to have the safest car on the market</strong> — it needs customers to believe it does. These positions took decades and billions to build, and would take catastrophic mismanagement to erase.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">You do not create value in a factory and deliver it to customers. You create the conditions for customers to create value for themselves. Marketing is the architecture of those conditions.</div>
+          <span class="pull-quote-attr">— The HBS Marketing Principle</span>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num">06</div>
+            <div class="rule-content">
+              <div class="rule-name">Brand as Financial Asset — Not Aesthetic Exercise</div>
+              <div class="rule-preview">HBS forces students to think about brand in financial terms. Brand value is the measurable premium customers pay over an unbranded equivalent.</div>
+            </div>
+            <div class="rule-toggle">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              Coca-Cola is water, sugar, caramel coloring, and flavoring. It costs less than $0.05 to produce a can's worth of ingredients. The brand turns that into a $2–5 product, globally, across 200 countries, for over 130 years. <strong>The brand premium — the gap between product cost and selling price beyond what competition would allow — is pure accumulated brand value.</strong>
+              <br><br>
+              Brand is built by: repeated positive experiences, consistent tone and visual identity, clear positioning that doesn't drift, and the ability to stand for something specific without flinching when challenged. Every deviation from the promise chips away at the brand. Every delivery on the promise reinforces it.
+              <br><br>
+              Brand is destroyed by: inconsistency (saying one thing, doing another), over-extension (putting the brand name on products that dilute its meaning), credibility gaps (promising luxury and delivering mediocrity), and discounting (training customers to wait for sales, which says the real price is the sale price).
+              <br><br>
+              <strong>The financial implication:</strong> Investing in brand is investing in a long-duration asset that doesn't appear on the balance sheet but generates measurable revenue premium indefinitely. Cutting brand investment to boost short-term earnings is the equivalent of selling off equipment — you're converting a productive asset into current revenue at the cost of future capacity.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CH 6: ETHICS & VERDICT -->
+      <div class="chapter-block" id="ch-ethics" data-chapter="Ethics & The Verdict" data-book="1">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-1-tag">Book I · Chapter 6</div>
+          <div class="chapter-num">06</div>
+          <h3 class="chapter-title">Ethics, Failure & Broughton's Verdict</h3>
+          <div class="chapter-subtitle">What HBS does when it confronts its own limitations — and whether the price is worth it</div>
+        </div>
+
+        <p class="body-text">HBS has a mandatory ethics curriculum — a module called LEAD (Leadership and Corporate Accountability). Broughton's account of it is damning in the most honest way. The cases are well-constructed. The frameworks are useful. The professors are serious. But the environment the ethics course exists within systematically undermines it.</p>
+
+        <p class="body-text">The highest-paying job offers go to investment banking and private equity. The most celebrated alumni work in finance. The social prestige flows toward those who maximize financial returns. <strong>Ethics, taught in the abstract, is elbowed out by the very culture it tries to counteract.</strong> This is not hypocrisy — it's an honest reflection of the market HBS serves.</p>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">The 2008 financial crisis was the case study HBS never wrote. Designed by MBAs. Executed by MBAs. Defended by MBAs. The architects were supremely confident in their models and spectacularly, catastrophically wrong.</div>
+          <span class="pull-quote-attr">— Broughton's sharpest indictment</span>
+        </div>
+
+        <div class="verdict-card">
+          <div class="verdict-stamp gold">Verdict</div>
+          <div class="verdict-q">Is a Harvard MBA worth $200,000?</div>
+          <div class="verdict-body">
+            <strong>For certain paths — unambiguously yes.</strong> Private equity, investment banking, top management consulting, the C-suite of major corporations: the HBS brand is nearly a prerequisite and the network is genuinely irreplaceable. The ROI, calculated over a 20-year career, is real and documented.
+            <br><br>
+            <strong>For startups — deeply questionable.</strong> The opportunity cost is two years and $200,000. Most successful founders who attended HBS report the most valuable element was the network, not the curriculum. You can learn the curriculum from books. You cannot replicate the network from books. If you're going to build a company, the question is whether you need the network badly enough to pay the price.
+            <br><br>
+            <strong>For wisdom — wrong institution.</strong> HBS produces sharpened operators, not philosophers. If you want intellectual transformation, moral depth, or genuine human development — there are better and far cheaper ways to get there. HBS optimizes for one specific objective: career trajectory in the institutional economy. It does this with extraordinary precision. Know what you're buying.
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER DIVIDER -->
+      <div class="chapter-divider">
+        <div class="divider-line"></div>
+        <div class="divider-ornament">✦</div>
+        <div style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;">Book II Begins</div>
+        <div class="divider-ornament">✦</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- =========================================================
+           BOOK II
+           ========================================================= -->
+      <div id="book2-content" style="margin-bottom: 2rem;">
+        <div style="text-align:center; margin-bottom: 4rem;">
+          <div style="font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.3em; color: var(--red-light); text-transform: uppercase; margin-bottom: 0.75rem;">Book II of II</div>
+          <h2 style="font-family: var(--font-display); font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 900; color: var(--parchment); line-height: 1.1; margin-bottom: 0.5rem;">What They <em style="color:#e87060; font-style:italic;">Don't</em> Teach You</h2>
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em;">Mark H. McCormack · Founded IMG · Built an empire on a handshake</div>
+          <div style="width: 60px; height: 1px; background: var(--red); margin: 2rem auto; opacity: 0.4;"></div>
+          <p class="body-text" style="max-width: 560px; margin: 0 auto;">McCormack never went to business school. He went to William & Mary and Yale Law. Then he built IMG — representing Arnold Palmer, Tiger Woods, managing Wimbledon — not through frameworks but through four decades of reading people and situations with frightening accuracy. This book is those four decades, distilled.</p>
+        </div>
+      </div>
+
+      <!-- CH 7: READING PEOPLE -->
+      <div class="chapter-block" id="ch-people" data-chapter="Reading People" data-book="2">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-2-tag">Book II · Chapter 1</div>
+          <div class="chapter-num">07</div>
+          <h3 class="chapter-title">Reading People — The Foundational Edge</h3>
+          <div class="chapter-subtitle">McCormack's most important skill — and the one no classroom has ever reliably taught</div>
+        </div>
+
+        <div class="lesson-tag red">Street Intelligence</div>
+
+        <p class="body-text">McCormack's most important skill — the one he credits for IMG's very existence — is <strong>acute, systematic observation of other human beings.</strong> Not listening to what they say. Watching what they do: how they hold themselves, what they react to, what they flinch at, what they move toward without realizing it.</p>
+
+        <p class="body-text">He describes sitting across from potential clients and reading them like instruments. Posture when a specific topic comes up. Response time before answering. What they ask about versus what they conspicuously avoid. The moment their face changes and they don't notice it changing. This is not manipulation — it is empathy made operational. The better you understand what someone actually wants, as opposed to what they are negotiating for, the more precisely you can structure something that satisfies both parties simultaneously.</p>
+
+        <div class="framework-box">
+          <div class="framework-title-bar red">◆ McCormack's Four Human Drivers — What Actually Moves People in Business</div>
+          <div class="framework-body">
+            <div class="framework-row">
+              <div class="framework-key red">Ego & Recognition</div>
+              <div class="framework-val">The single most underestimated driver in business. Most decisions — even apparently rational financial ones — are fundamentally driven by how the decision makes the decision-maker look to people they care about. The logical analysis presented in meetings is frequently post-hoc rationalization of an ego-driven choice made before the meeting started. <strong>Identify what someone's ego is invested in and you understand their behavior.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key red">Fear of Loss</div>
+              <div class="framework-val">Loss aversion is more powerful than gain appetite — Kahneman proved this; McCormack knew it instinctively decades earlier. People work harder to avoid losing $1,000 than to gain $1,000. <strong>Structure your propositions around protecting what they already have</strong> — their status, their relationships, their reputation, their existing wins — and you'll close faster than any features pitch.</div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key red">Belonging & Trust</div>
+              <div class="framework-val">People do business with people they like and trust. A slightly inferior product from a trusted partner beats a superior product from a stranger, every time, in every market. Building genuine trust — slowly, through consistency, through showing up — is a long-term competitive advantage that cannot be purchased, expedited, or faked indefinitely. <strong>McCormack built IMG on relationships that lasted decades because he treated them as the asset, not as the means to an asset.</strong></div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key red">Self-Interest</div>
+              <div class="framework-val">Always, always understand the other party's actual self-interest — not what they claim their interest is, but what would actually make their life better. Their career incentives. Their bonus structure. Their boss's priorities. Their personal ambitions that have nothing to do with the deal on the table. <strong>Align your proposal with their self-interest, make this alignment visible, and it almost sells itself.</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="terminal-dot td-red"></div>
+            <div class="terminal-dot td-yellow"></div>
+            <div class="terminal-dot td-green"></div>
+            <div class="terminal-title">McCormack's People-Reading Checklist — Run This in Every Meeting</div>
+          </div>
+          <div class="terminal-line"><span class="terminal-key red">First topic chosen</span><span class="terminal-val">What did they choose to talk about first? That's their priority, not small talk. File it.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Visible reactions</span><span class="terminal-val">What did they physically react to? A micro-expression, a lean forward, a tone shift — these reveal true valuation before the brain can censor it.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">The silences</span><span class="terminal-val">What do they NOT ask about? The absence of a question is often more revealing than its presence. They avoided it for a reason.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Subordinate treatment</span><span class="terminal-val">How do they treat people below them in the hierarchy? This is the real character, not the performance they put on for peers and superiors.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Word/body alignment</span><span class="terminal-val">Do their words and body language align? Incongruence — calm voice, tight posture — signals something important is unsaid.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Ego investment</span><span class="terminal-val">What is their identity bound up in? Their title? Their track record? Their taste? Their reputation with a specific person? That's your key.</span></div>
+        </div>
+
+        <div class="rule-card red" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num" style="color: var(--red-light);">R1</div>
+            <div class="rule-content">
+              <div class="rule-name">First Impressions as Intelligence — Not Prejudice</div>
+              <div class="rule-preview">McCormack's counterintuitive rule: form a strong first impression, then spend the next 30 minutes trying to disprove it.</div>
+            </div>
+            <div class="rule-toggle" style="color: var(--red-light);">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              Your gut reaction to a person in the first few seconds encodes pattern-matched intelligence your conscious mind hasn't processed yet. This is not magic — it's your brain running a fast, low-resolution pattern match against every similar person you've encountered before. It's often wrong. But it's not random noise.
+              <br><br>
+              McCormack's rule: take the first impression seriously as a hypothesis. Then spend the first 30 minutes of a meeting actively trying to disprove it. Ask questions that would contradict it. Watch for evidence that challenges it. If you cannot disprove it by the end of the meeting, trust it. If you can, update to the new evidence.
+              <br><br>
+              This is Bayesian reasoning applied to social intelligence. It avoids two failure modes: dismissing the first impression as "mere gut feeling" (losing real intelligence), and treating it as settled truth (calcifying a potentially wrong model). Most excellent operators do this instinctively. No MBA program teaches it explicitly — McCormack does.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CH 8: SELLING -->
+      <div class="chapter-block" id="ch-selling" data-chapter="Selling" data-book="2">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-2-tag">Book II · Chapter 2</div>
+          <div class="chapter-num">08</div>
+          <h3 class="chapter-title">Selling — The Skill Everyone Uses and Nobody Admits To</div>
+          <div class="chapter-subtitle">McCormack's complete philosophy of persuasion, from first contact to signed deal</div>
+        </div>
+
+        <div class="lesson-tag red">Street Intelligence</div>
+
+        <p class="body-text">McCormack's most radical claim, stated flatly in the book's opening chapters: <strong>selling is not a job function. It is the fundamental activity of business life.</strong> When you pitch your boss on a new strategy, you are selling. When you recruit a candidate, you are selling. When you ask for budget, you are selling. When you have been building a relationship with a client for 18 months before ever asking for business, you are selling.</p>
+
+        <p class="body-text">The MBA who thinks selling is beneath them — a tactical activity delegated to salespeople while "real" executives think and plan — is functionally illiterate in the most important skill of organizational life. <strong>Every interaction is a sale. The only question is whether you're doing it well or poorly.</strong></p>
+
+        <div class="concept-grid">
+          <div class="concept-cell">
+            <span class="concept-tag red">Principle 01</span>
+            <div class="concept-name">Sell to the Decision-Maker</div>
+            <div class="concept-body">Organizations decide through individuals, not committees. The committee discusses. One person decides. That person is often not the biggest title in the room. Find them. Read them. Speak to their specific concerns. Committee dynamics are noise around this core signal.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Principle 02</span>
+            <div class="concept-name">Believe It or Stop</div>
+            <div class="concept-body">McCormack refused to represent people or products he didn't genuinely believe in. His reasoning: authentic enthusiasm is unbeatable in a sales context, and faking it long-term is exhausting, eventually transparent, and ultimately corrosive to the relationship infrastructure your career runs on.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Principle 03</span>
+            <div class="concept-name">Silence as a Weapon</div>
+            <div class="concept-body">After making your pitch, stop talking. Most salespeople — nervous, eager, uncertain — fill silence with more pitching, diluting everything that came before. Silence creates pressure. It forces the other party to respond. McCormack sat in silence after proposals with patience that made counterparts visibly uncomfortable. Then they moved.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Principle 04</span>
+            <div class="concept-name">Real vs. Manufactured Urgency</div>
+            <div class="concept-body">Artificial urgency destroys trust in a single transaction. Real urgency — a genuine deadline, a competing offer, a window that closes — should be communicated clearly and factually. If there's no real urgency, paint the cost of inaction: what does the client lose by waiting six months? Make inaction feel expensive.</div>
+          </div>
+        </div>
+
+        <div class="pull-quote red-variant">
+          <div class="pull-quote-text">Find out what someone wants more than anything else. Then show them how working with you gets them there. Not what you're offering — what they want. These are often completely different conversations, and only one of them closes deals.</div>
+          <span class="pull-quote-attr">— McCormack's definition of great selling</span>
+        </div>
+
+        <div class="rule-card red" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num" style="color: var(--red-light);">R2</div>
+            <div class="rule-content">
+              <div class="rule-name">Medium Strategy — The Channel Determines the Message</div>
+              <div class="rule-preview">Never negotiate a critical deal by letter. You lose everything except the words. Face-to-face is where deals actually get done.</div>
+            </div>
+            <div class="rule-toggle" style="color: var(--red-light);">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              McCormack was decades ahead of his time on communication strategy. His medium hierarchy, from most to least powerful for closing things that matter:
+              <br><br>
+              <strong>Face-to-face:</strong> The only channel for important decisions. You get everything — verbal content, tone, body language, reaction, the flinches, the openings, the moments the other party reveals what they actually want. No other channel gives you this intelligence.
+              <br><br>
+              <strong>Phone:</strong> Second-best. You lose body language but retain tone. For decisions below the highest stakes, phone is efficient and often preferable to the time cost of in-person meetings.
+              <br><br>
+              <strong>Written (email, letter, memo):</strong> For documentation, not persuasion. Written communication creates records — which is valuable. But it strips out all the real-time intelligence that closes deals. Do not use email to negotiate. Use email to confirm what you negotiated in person.
+              <br><br>
+              McCormack's memo habit: after every important meeting, he wrote a brief summary of what was agreed and sent it to all parties. Not bureaucracy — insurance. "I never said that" conversations derail more deals than bad negotiating positions. The paper trail is protection.
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-label">Knowledge Check</div>
+          <div class="quiz-question">You've just made your best pitch to a potential client. They pause and seem to be thinking. According to McCormack, what should you do?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Adding more information dilutes the impact of your pitch and signals anxiety. McCormack would consider this a mistake.')"><span class="quiz-opt-letter">A</span> Add more supporting information while they think</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Asking if they have questions interrupts their thinking and fills a productive silence with noise.')"><span class="quiz-opt-letter">B</span> Ask if they have any questions</button>
+            <button class="quiz-option" onclick="answerQuiz(this, true, 'Correct. Silence creates pressure on the other party to respond. McCormack waited in silence until counterparts moved — and they always did.')"><span class="quiz-opt-letter">C</span> Stay quiet and wait for them to speak first</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Sending a follow-up email abandons the face-to-face advantage and gives the client a reason to delay responding.')"><span class="quiz-opt-letter">D</span> Offer to send them a follow-up email with more details</button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- CH 9: NEGOTIATION -->
+      <div class="chapter-block" id="ch-negotiation" data-chapter="Negotiation" data-book="2">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-2-tag">Book II · Chapter 3</div>
+          <div class="chapter-num">09</div>
+          <h3 class="chapter-title">Negotiation — The Game Within the Deal</h3>
+          <div class="chapter-subtitle">McCormack's battle-tested rules from 40 years at the highest-stakes tables on earth</div>
+        </div>
+
+        <div class="lesson-tag red">Street Intelligence</div>
+
+        <p class="body-text">McCormack negotiated with every major broadcaster, sports federation, corporation, and sponsor on earth. His philosophy cuts against academic negotiation theory in one critical way: he does not pretend that negotiation is primarily a rational exchange of interests. It is — but it happens through people, with all their ego, fear, pride, and irrationality. <strong>The rational model tells you what the deal should look like. McCormack tells you how to actually get there through real human beings.</strong></p>
+
+        <div class="rule-card red" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num" style="color: var(--red-light);">R3</div>
+            <div class="rule-content">
+              <div class="rule-name">The Six Non-Negotiable Rules</div>
+              <div class="rule-preview">McCormack's core negotiation framework — distilled from 40 years across every industry and culture.</div>
+            </div>
+            <div class="rule-toggle" style="color: var(--red-light);">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>Rule 1 — Know Your Walk-Away Before You Sit Down:</strong> Define the point below which you will not go before the negotiation starts. This is not a negotiating position you'll reveal — it's a private number that protects you from making bad deals under pressure. Without it, the pressure of the room will set your walk-away for you, and it will always be lower than it should be.
+              <br><br>
+              <strong>Rule 2 — Let Them Go First:</strong> The first number stated anchors the negotiation psychologically. Both parties will negotiate relative to that anchor, even when they explicitly try not to. Making them anchor first is a structural advantage. Their number also tells you their range — information you cannot get any other way.
+              <br><br>
+              <strong>Rule 3 — Never Accept the First Offer:</strong> Even if the first offer is exactly what you wanted. Accepting immediately signals either that you asked too little, or that they feel they overpaid. Both undermine the relationship and the execution of the deal. Make them earn it — even if earning it costs them almost nothing.
+              <br><br>
+              <strong>Rule 4 — Understand Their Constraints:</strong> What looks like resistance is often a structural constraint — internal budget cycles, approval thresholds, competing commitments, political considerations. Understanding the constraint lets you work around it rather than against it. "Our board won't approve more than X without a committee vote" is not a negotiating position — it's information about how to structure the deal.
+              <br><br>
+              <strong>Rule 5 — Concede Slowly and Visibly:</strong> Concessions made too quickly or too easily are discounted — the other party doesn't register them as real gives. Every concession you make should feel earned by the other party and visible to them: "I'm pushing hard internally to make this work for you." Slow, visible concession creates reciprocity pressure.
+              <br><br>
+              <strong>Rule 6 — Play the Long Game:</strong> Most negotiations are not isolated transactions. They are episodes in ongoing relationships. Winning a negotiation by leaving the other party feeling beaten is a short-term gain with long-term relationship cost. The goal is a deal both parties want to execute — and will execute with energy, not resentment.
+            </div>
+          </div>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-cell">
+            <span class="concept-tag red">Advanced Tactic</span>
+            <div class="concept-name">The Disappearing Offer</div>
+            <div class="concept-body">When the other party stalls without clear reason, McCormack would occasionally withdraw the offer — not permanently, but with a stated time limit. <strong>Loss aversion kicks in harder when something is being removed than when something is being offered.</strong> Use sparingly. Only works with a credible withdrawal.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Advanced Tactic</span>
+            <div class="concept-name">The Comfort Zone Close</div>
+            <div class="concept-body">Deals close where the other party feels safe. McCormack often chose to finalize deals in the other party's office — on their turf. <strong>A comfortable, respected counterpart makes faster, more generous decisions.</strong> Pressure environments make people defensive, slow, and small. Counter-intuitive but consistently effective.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Advanced Tactic</span>
+            <div class="concept-name">The Strategic Underreveal</div>
+            <div class="concept-body">Open by understating your position slightly. Let the other party feel they've made progress. Then reveal the fuller ask as a logical escalation. They've already mentally committed to a partial deal — pulling back feels like loss, not as a new demand being added.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag red">Advanced Tactic</span>
+            <div class="concept-name">The Unsaid Leverage</div>
+            <div class="concept-body"><strong>Never reveal the full extent of what you need from them.</strong> The moment you expose your dependency, they have leverage. Give enough to build trust and move the conversation. Withhold enough to maintain balance. This is not deception — it's negotiation discipline.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CH 10: RUNNING THINGS -->
+      <div class="chapter-block" id="ch-running" data-chapter="Running Things" data-book="2">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-2-tag">Book II · Chapter 4</div>
+          <div class="chapter-num">10</div>
+          <h3 class="chapter-title">Running Things — What Managers Actually Do</h3>
+          <div class="chapter-subtitle">McCormack's unsentimental guide to managing people, time, and the theater of organizations</div>
+        </div>
+
+        <div class="lesson-tag red">Street Intelligence</div>
+
+        <p class="body-text">McCormack's management philosophy comes entirely from doing, not from theory. Many of his insights conflict directly with the HR orthodoxy of his era — and remain more honest than much of what passes for leadership wisdom today.</p>
+
+        <div class="rule-card red" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num" style="color: var(--red-light);">R4</div>
+            <div class="rule-content">
+              <div class="rule-name">Hire Smart. Define Outcomes. Get Out of the Way.</div>
+              <div class="rule-preview">McCormack's management philosophy in one sentence — and why it's harder than it sounds.</div>
+            </div>
+            <div class="rule-toggle" style="color: var(--red-light);">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>Hire people smarter than you in their domain.</strong> This requires sufficient self-awareness to know what your domain is, and sufficient ego security to hire people who will overshadow you in theirs. Many managers hire people slightly worse than themselves — people who won't challenge or replace them. This is how organizations slowly calcify.
+              <br><br>
+              <strong>Define outcomes, not process.</strong> Tell people what winning looks like. Give them the authority and resources to get there. Hold them accountable to the result — not the method. The moment you specify the method, you've taken ownership of the outcome. And you've communicated distrust.
+              <br><br>
+              <strong>Delegate outcomes, not tasks.</strong> A task delegation says "do this." An outcome delegation says "make this happen." The difference: outcome delegation preserves the subordinate's agency, creativity, and accountability. Task delegation creates an executor with no skin in the game and no reason to think beyond the specific instruction.
+              <br><br>
+              <strong>The entrepreneur's trap:</strong> The founder or senior executive who cannot let go of execution detail becomes a bottleneck for every decision. They signal — loudly — that they don't trust their team. Talented people stop initiating because they know it will be overridden. The organization becomes the leader's shadow instead of its own entity.
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="terminal-dot td-red"></div>
+            <div class="terminal-dot td-yellow"></div>
+            <div class="terminal-dot td-green"></div>
+            <div class="terminal-title">McCormack's Time Rules — The Only Non-Renewable Resource</div>
+          </div>
+          <div class="terminal-line"><span class="terminal-key red">Agenda or decline</span><span class="terminal-val">Never attend a meeting without an agenda. Every minute you spend in a meeting is a minute you are purchasing. Know what you're buying.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Hardest task first</span><span class="terminal-val">Do the most important, most difficult task before email, before calls, before meetings. After that, everything else is easier or doesn't matter.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Delegate everything else</span><span class="terminal-val">If it doesn't require your specific judgment, relationships, or credibility — delegate it. Ruthlessly. The cost of not delegating is paid in your most valuable hours.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Phone over email</span><span class="terminal-val">A five-minute call resolves what a five-day email chain cannot. Email is for documentation. Phone is for decisions.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Dead time is thinking time</span><span class="terminal-val">Flights, waiting rooms, commutes — McCormack used every dead minute for thinking, planning, and relationship maintenance. Never waste it.</span></div>
+          <div class="terminal-line"><span class="terminal-key red">Busy ≠ productive</span><span class="terminal-val">These are opposites in disguise. The busiest people are often the least productive. Protect your calendar the way you'd protect a financial asset — because it is one.</span></div>
+        </div>
+
+        <div class="pull-quote red-variant">
+          <div class="pull-quote-text">The most dangerous manager is the one who mistakes activity for progress. Being in meetings all day, responding to emails instantly, always available — this is not high performance. It is the performance of high performance.</div>
+          <span class="pull-quote-attr">— McCormack's observation on organizational theater</span>
+        </div>
+      </div>
+
+      <!-- CH 11: TIMING & POWER -->
+      <div class="chapter-block" id="ch-timing" data-chapter="Timing & Power" data-book="2">
+        <div class="chapter-header">
+          <div class="chapter-book-tag book-2-tag">Book II · Chapter 5</div>
+          <div class="chapter-num">11</div>
+          <h3 class="chapter-title">Timing, Power & The Invisible Game</h3>
+          <div class="chapter-subtitle">Reading situations. Knowing when to move. Understanding who actually holds power in any room.</div>
+        </div>
+
+        <div class="lesson-tag red">Street Intelligence</div>
+
+        <p class="body-text">McCormack's most underrated insight: <strong>the when of a decision is often more consequential than the what.</strong> The same proposal, delivered at the wrong moment, fails. Delivered at the right moment — when the other party has a fresh problem you solve, or when they've just celebrated a win and are expansive, or when a competitor has just disappointed them — succeeds with far less friction.</p>
+
+        <div class="rule-card red" onclick="toggleRule(this)">
+          <div class="rule-card-header">
+            <div class="rule-num" style="color: var(--red-light);">R5</div>
+            <div class="rule-content">
+              <div class="rule-name">Power Mapping — Who Actually Decides</div>
+              <div class="rule-preview">Formal titles frequently misrepresent real power. The person who signs the contract is often not the person who made the decision.</div>
+            </div>
+            <div class="rule-toggle" style="color: var(--red-light);">▾ expand</div>
+          </div>
+          <div class="rule-body">
+            <div class="rule-body-text">
+              <strong>The shadow hierarchy:</strong> In any organization, there is the organizational chart, and there is the actual power structure. The executive assistant who controls calendar access. The finance director who approves or delays budget. The technical expert whose opinion the CEO privately defers to on everything within their domain. These people have enormous operational power that their titles completely obscure. McCormack made a practice of identifying and cultivating these relationships as deliberately as he cultivated relationships with named decision-makers.
+              <br><br>
+              <strong>Information asymmetry:</strong> McCormack was careful — deliberately, systematically careful — about what he revealed, to whom, and when. Not because he was secretive for its own sake, but because information disclosed too early frequently destroyed negotiating leverage, or committed him to a position before he was ready to commit. The discipline of knowing what not to say is as important as knowing what to say.
+              <br><br>
+              <strong>Power is situational, not categorical:</strong> The person who has power in one room may have none in the next. The junior associate who seems peripheral in today's meeting is tomorrow's decision-maker. The vendor you're managing today is acquired by your biggest client next year. Treat everyone as if they might matter — because in a long enough time horizon, they usually will.
+              <br><br>
+              <strong>Dependency is leverage, visible dependency is vulnerability:</strong> Never let someone know the full extent of what you need from them. Give enough to build trust and move the negotiation forward. Withhold enough to maintain balance. The moment your counterpart can see exactly how much you need this deal, the negotiation is structurally over.
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-block">
+          <div class="quiz-label">Knowledge Check</div>
+          <div class="quiz-question">McCormack says "the when of a decision is often more consequential than the what." Which scenario best demonstrates this principle?</div>
+          <div class="quiz-options">
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Pricing is the what, not the when. This doesn\'t demonstrate timing as strategy.')"><span class="quiz-opt-letter">A</span> Offering a client a lower price than your competitors</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'A better product is a what improvement, not a timing insight.')"><span class="quiz-opt-letter">B</span> Building a better product than what currently exists</button>
+            <button class="quiz-option" onclick="answerQuiz(this, true, 'Correct. Reaching a potential client immediately after their existing vendor failed demonstrates timing intelligence — the proposal lands when the receptivity is highest.')"><span class="quiz-opt-letter">C</span> Reaching out to a potential client the day after their main vendor publicly failed them</button>
+            <button class="quiz-option" onclick="answerQuiz(this, false, 'Having a strong brand is a long-term positioning asset, not a timing-as-strategy example.')"><span class="quiz-opt-letter">D</span> Having a well-known brand that clients already trust</button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+      </div>
+
+      <!-- =========================================================
+           SYNTHESIS
+           ========================================================= -->
+      <div class="chapter-divider">
+        <div class="divider-line"></div>
+        <div class="divider-ornament">◆</div>
+        <div style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.2em; text-transform: uppercase;">Final Synthesis</div>
+        <div class="divider-ornament">◆</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div id="synthesis-section" class="chapter-block" data-chapter="Synthesis" data-book="0">
+        <div class="chapter-header">
+          <div class="chapter-book-tag" style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;">Books I & II · Complete Synthesis</div>
+          <div class="chapter-num" style="color: var(--ink-4);">★</div>
+          <h3 class="chapter-title">The Complete Operator — Putting Both Books Together</h3>
+          <div class="chapter-subtitle">Why you need both, when to deploy each, and what it looks like when someone has mastered the full spectrum</div>
+        </div>
+
+        <p class="body-text">These two books are not alternatives. They are not even complements. They are <strong>two halves of a single complete education</strong> that neither one delivers alone — and that no formal institution has yet figured out how to deliver together.</p>
+
+        <div class="synthesis-banner">
+          <div class="synthesis-icon">⊕</div>
+          <div class="synthesis-title">The Core Distinction</div>
+          <p class="synthesis-body">Broughton gives you the grammar of business: the frameworks, the vocabulary, the analytical tools that structure complex problems. McCormack gives you the execution layer: how to move through actual human beings and organizations to turn analysis into outcomes. <strong>The world overproduces people who can do the first. It desperately underproduces people who can do both.</strong></p>
+        </div>
+
+        <div class="framework-box">
+          <div class="framework-title-bar">◆ When You Are Broughton vs. When You Are McCormack</div>
+          <div class="framework-body">
+            <div class="framework-row">
+              <div class="framework-key">Broughton Mode</div>
+              <div class="framework-val">Building the financial model. Stress-testing the strategy. Designing the organizational structure. Writing the board memo. Analyzing why the last quarter missed targets. Evaluating an acquisition. Anywhere you need to impose structure on complexity and communicate it clearly to people who don't have time to think through the details themselves.</div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">McCormack Mode</div>
+              <div class="framework-val">In any room with another human being trying to make something happen. Negotiating the deal. Recruiting the key hire. Selling the strategy to a skeptical CFO. Building a relationship with a potential client across 18 months before the business is there. Reading why the meeting just shifted. Every single interaction where analysis alone cannot move the situation.</div>
+            </div>
+            <div class="framework-row">
+              <div class="framework-key">Both Simultaneously</div>
+              <div class="framework-val">The genuinely excellent operator — the ones who build institutions, not just careers — uses both simultaneously. They bring rigorous analysis to every strategic question, and they read the human room every time they bring that analysis into contact with other people. They know what's true, and they know how to make people believe what's true and act on it. <strong>This combination is extremely rare and extremely valuable.</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept-grid">
+          <div class="concept-cell">
+            <span class="concept-tag">The Street Edge 01</span>
+            <div class="concept-name">Relationship Infrastructure</div>
+            <div class="concept-body">Build your network before you need it. Relationships created in desperation are transactional and forgettable. Relationships built through genuine investment over time become a compounding competitive advantage that analytical skill cannot replicate.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">The Street Edge 02</span>
+            <div class="concept-name">Follow-Through as Moat</div>
+            <div class="concept-body">Most people promise and underdeliver. McCormack did exactly what he said, when he said it, without being asked twice. In a world where this is genuinely rare, it is an absolute competitive advantage. Reputation for reliability compounds indefinitely.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">The Street Edge 03</span>
+            <div class="concept-name">Bias for Action</div>
+            <div class="concept-body">McCormack moved fast. He made decisions with incomplete information and corrected course. The cost of inaction — missed opportunities, ceded ground, organizational drift — consistently exceeded the cost of imperfect decisions that could be revised.</div>
+          </div>
+          <div class="concept-cell">
+            <span class="concept-tag">The Street Edge 04</span>
+            <div class="concept-name">Controlled Aggression</div>
+            <div class="concept-body">McCormack pursued relentlessly — but with calibration. He knew when to push and when to hold, when to reveal strength and when to conceal it. Raw aggression without intelligence is self-defeating. Controlled aggression, applied precisely, is decisive.</div>
+          </div>
+        </div>
+
+        <div class="pull-quote">
+          <div class="pull-quote-text">The most dangerous executive in any room is the one who can think clearly about complex problems AND move decisively through other human beings to make things happen. HBS teaches the first. McCormack teaches the second. The market pays extraordinary premiums for whoever has both.</div>
+          <span class="pull-quote-attr">— Final synthesis of both books</span>
+        </div>
+      </div>
+
+      <!-- =========================================================
+           GLOSSARY
+           ========================================================= -->
+      <div id="glossary-section" class="chapter-block" data-chapter="Glossary" data-book="0">
+        <div class="chapter-header">
+          <div class="chapter-book-tag" style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;">Reference</div>
+          <div class="chapter-num" style="color: var(--ink-4);">GL</div>
+          <h3 class="chapter-title">The Glossary — 30 Terms Every Serious Reader Must Own</h3>
+          <div class="chapter-subtitle">From EBITDA to loss aversion, defined precisely and without condescension</div>
+        </div>
+
+        <div class="glossary-item"><div class="glossary-term">EBITDA</div><div class="glossary-def">Earnings before interest, taxes, depreciation, and amortization. Strips out financing and accounting decisions to reveal raw operational performance. The most common metric in business valuation and deal-making.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Free Cash Flow</div><div class="glossary-def">Operating cash flow minus capital expenditures. The purest measure of value creation — cash a business generates after paying for the investments needed to maintain it. Warren Buffett's preferred lens.</div></div>
+        <div class="glossary-item"><div class="glossary-term">DCF</div><div class="glossary-def">Discounted Cash Flow. A valuation method that projects future cash flows and discounts them to present value using a rate that reflects risk. Philosophically rigorous; practically sensitive to assumptions.</div></div>
+        <div class="glossary-item"><div class="glossary-term">ROIC</div><div class="glossary-def">Return on Invested Capital. The ratio of operating profit to capital invested. If ROIC exceeds the company's cost of capital, it is creating value. If not, it is destroying it — regardless of what the income statement says.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Leveraged Buyout (LBO)</div><div class="glossary-def">An acquisition financed primarily with debt. The acquired company's cash flows service the debt. The equity investor controls a large asset with a small equity investment, amplifying both potential returns and potential losses.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Competitive Moat</div><div class="glossary-def">A structural, durable advantage that protects a business's market position and profits from competitive erosion. Sources: brand, network effects, switching costs, cost advantages, regulatory licensing.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Disruption</div><div class="glossary-def">Per Christensen: a process by which a product or service initially serving low-end or overlooked segments eventually moves upmarket and displaces established competitors. Distinct from sustaining innovation (making existing products better).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Porter's Five Forces</div><div class="glossary-def">A framework for analyzing the structural profitability of an industry: threat of new entrants, supplier power, buyer power, threat of substitutes, and competitive rivalry. High forces = structurally low margins for everyone.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Positioning</div><div class="glossary-def">The mental slot a brand occupies in a customer's mind. Positioning is not what you do to a product — it's what you do to the prospect's perception. The clearest and most durable competitive advantage in consumer markets.</div></div>
+        <div class="glossary-item"><div class="glossary-term">STP</div><div class="glossary-def">Segmentation, Targeting, Positioning. The three-step marketing strategy process: divide the market into segments, choose which to serve, and define the position you'll occupy in their minds.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Loss Aversion</div><div class="glossary-def">The psychological phenomenon where the pain of losing something outweighs the pleasure of gaining the equivalent. Kahneman's research suggests losses feel roughly twice as powerful as gains of the same magnitude.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Anchoring</div><div class="glossary-def">The tendency to rely disproportionately on the first piece of information offered when making decisions. In negotiation: whoever states a number first anchors the entire conversation, even when both parties try to ignore it.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Working Capital</div><div class="glossary-def">Current assets minus current liabilities. Measures a company's short-term financial health and operational efficiency. Shrinking working capital can signal an approaching liquidity crisis before it appears in profit figures.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Authentic Leadership</div><div class="glossary-def">Bill George's framework: leaders who know who they are, operate from clear values, and build trust through consistency. Authenticity is not transparency — it is being predictably, reliably yourself so people can trust and follow you.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Job-to-be-Done</div><div class="glossary-def">Christensen's insight: customers don't buy products — they hire them to do a job. The drill bit is hired to make holes. Understanding the underlying job reveals competitors you'd never identify by looking at your own product category.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Control Premium</div><div class="glossary-def">The premium an acquirer pays above a company's market price to gain operational control. Typically 20–40%. Reflects the value of being able to direct the company's strategy, management, and capital allocation without shareholder approval.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Capital Structure</div><div class="glossary-def">The mix of debt and equity a company uses to finance its assets. Debt is cheaper (tax-deductible) but creates fixed obligations. The optimal structure maximizes value without making the company fragile.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Cost of Capital</div><div class="glossary-def">The rate of return a company must earn to satisfy its investors (both debt and equity holders). Used as the discount rate in DCF. A business only creates value when its returns exceed its cost of capital.</div></div>
+        <div class="glossary-item"><div class="glossary-term">BATNA</div><div class="glossary-def">Best Alternative to a Negotiated Agreement. Your walk-away option. The stronger your BATNA, the more leverage you have. The first strategic step of any negotiation is improving your BATNA before entering the room.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Epistemic Humility</div><div class="glossary-def">The recognition that your knowledge is incomplete, your models are approximations, and your conclusions might be wrong. The antidote to the overconfidence that HBS's case method can inadvertently manufacture.</div></div>
+      </div>
+
+    </div><!-- #content -->
+  </section>
+
+</div><!-- #main -->
+
+<!-- FOOTER -->
+<footer id="footer" style="margin-top: 4rem;">
+  <div class="footer-logo">HBS Black Book</div>
+  <div class="footer-text">
+    Based on: What They Teach You at Harvard Business School · Philip Delves Broughton · 2008<br>
+    What They Don't Teach You at Harvard Business School · Mark H. McCormack · 1984<br><br>
+    A complete field manual. Not affiliated with Harvard University.
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ---- INTRO SEQUENCE ----
+const loadingTexts = [
+  'Initializing archive…',
+  'Loading Book I…',
+  'Loading Book II…',
+  'Preparing field manual…',
+  'Ready.'
+];
+let li = 0;
+const loadingEl = document.getElementById('intro-loading');
+const introInterval = setInterval(() => {
+  li++;
+  if (li < loadingTexts.length) {
+    loadingEl.textContent = loadingTexts[li];
+  } else {
+    clearInterval(introInterval);
+    setTimeout(() => {
+      document.getElementById('intro').classList.add('hidden');
+      document.getElementById('main').classList.add('visible');
+      document.getElementById('nav').classList.add('visible');
+      initChapterDots();
+      observeChapters();
+    }, 300);
+  }
+}, 500);
+
+// ---- SCROLL EVENTS ----
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+
+  document.getElementById('reading-progress-fill').style.width = progress + '%';
+
+  const circumference = 69.1;
+  const offset = circumference - (progress / 100 * circumference);
+  document.getElementById('progress-circle').style.strokeDashoffset = offset;
+
+  document.getElementById('back-top').classList.toggle('visible', scrollTop > 400);
+
+  // Nav link active state — detect based on what's actually visible
+  const navLinks = document.querySelectorAll('.nav-link');
+  const viewMid = window.innerHeight * 0.45;
+
+  // Find the chapter-block closest to the middle of the viewport
+  let activeBook = null;
+  let activeSpecial = null;
+  let closestDist = Infinity;
+
+  document.querySelectorAll('.chapter-block').forEach(ch => {
+    const rect = ch.getBoundingClientRect();
+    const dist = Math.abs(rect.top + rect.height / 2 - viewMid);
+    if (dist < closestDist) {
+      closestDist = dist;
+      activeBook = ch.getAttribute('data-book');
+      const id = ch.id;
+      if (id === 'synthesis-section') activeSpecial = 'synthesis';
+      else if (id === 'glossary-section') activeSpecial = 'glossary';
+      else activeSpecial = null;
+    }
+  });
+
+  // Also check toc
+  const tocEl = document.getElementById('toc');
+  if (tocEl) {
+    const tocRect = tocEl.getBoundingClientRect();
+    if (tocRect.top < viewMid && tocRect.bottom > viewMid) {
+      activeBook = 'toc'; activeSpecial = null;
+    }
+  }
+
+  navLinks.forEach(l => l.classList.remove('active'));
+  if (activeSpecial === 'synthesis') navLinks[3] && navLinks[3].classList.add('active');
+  else if (activeSpecial === 'glossary') navLinks[4] && navLinks[4].classList.add('active');
+  else if (activeBook === 'toc') navLinks[0] && navLinks[0].classList.add('active');
+  else if (activeBook === '1') navLinks[1] && navLinks[1].classList.add('active');
+  else if (activeBook === '2') navLinks[2] && navLinks[2].classList.add('active');
+
+  // Chapter dots
+  updateChapterDots();
+});
+
+// ---- CHAPTER DOTS ----
+function initChapterDots() {
+  const chapters = document.querySelectorAll('.chapter-block');
+  const dotsContainer = document.getElementById('chapter-dots');
+  dotsContainer.innerHTML = '';
+  chapters.forEach((ch, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'chapter-dot';
+    dot.setAttribute('data-index', i);
+    const book = ch.getAttribute('data-book');
+    dot.innerHTML = `<div class="chapter-dot-tip">${ch.getAttribute('data-chapter') || 'Chapter'}</div>`;
+    dot.addEventListener('click', () => {
+      ch.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    dotsContainer.appendChild(dot);
+  });
+}
+
+function updateChapterDots() {
+  const chapters = document.querySelectorAll('.chapter-block');
+  const dots = document.querySelectorAll('.chapter-dot');
+  chapters.forEach((ch, i) => {
+    const rect = ch.getBoundingClientRect();
+    const book = ch.getAttribute('data-book');
+    if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+      dots.forEach(d => d.classList.remove('active', 'active-red'));
+      if (dots[i]) {
+        dots[i].classList.add(book === '2' ? 'active-red' : 'active');
+      }
+    }
+  });
+}
+
+// ---- INTERSECTION OBSERVER for chapter animations ----
+function observeChapters() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.chapter-block').forEach(ch => observer.observe(ch));
+}
+
+// ---- RULE CARDS ----
+function toggleRule(card) {
+  const isExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.rule-card.expanded').forEach(c => {
+    if (c !== card) {
+      c.classList.remove('expanded');
+      const t = c.querySelector('.rule-toggle');
+      if (t) t.textContent = '▾ expand';
+    }
+  });
+  card.classList.toggle('expanded', !isExpanded);
+  const toggle = card.querySelector('.rule-toggle');
+  if (toggle) toggle.textContent = isExpanded ? '▾ expand' : '▴ close';
+}
+
+// ---- QUIZ ----
+function answerQuiz(btn, isCorrect, feedback) {
+  const block = btn.closest('.quiz-block');
+  const options = block.querySelectorAll('.quiz-option');
+  const feedbackEl = block.querySelector('.quiz-feedback');
+
+  options.forEach(opt => {
+    opt.disabled = true;
+    opt.classList.remove('correct', 'wrong', 'reveal');
+  });
+
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  if (!isCorrect) {
+    options.forEach(opt => {
+      if (opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) {
+        opt.classList.add('reveal');
+      }
+    });
+  }
+
+  feedbackEl.textContent = feedback;
+  feedbackEl.className = `quiz-feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+}
+
+// ---- SEARCH ----
+const searchIndex = [
+  { tag: 'Book I · Foundation', title: 'The Case Method', preview: 'How HBS teaches by decision, not instruction — and why articulation can beat accuracy in the classroom', section: 'ch-hbs-machine' },
+  { tag: 'Book I · Foundation', title: 'The Shadow Curriculum', preview: 'Network as infrastructure, manufactured confidence, pattern recognition at scale', section: 'ch-hbs-machine' },
+  { tag: 'Book I · Finance', title: 'The Three Financial Statements', preview: 'Income statement, balance sheet, and cash flow statement — and why cash flow is the only truth', section: 'ch-finance' },
+  { tag: 'Book I · Finance', title: 'Valuation Methods — DCF, Comps, Precedents', preview: 'Three lenses for business valuation. Use all three. Where they converge, you have confidence.', section: 'ch-finance' },
+  { tag: 'Book I · Finance', title: 'Capital Structure & Leverage', preview: 'Debt is cheaper than equity — but a fixed obligation. How PE firms weaponize this asymmetry.', section: 'ch-finance' },
+  { tag: 'Book I · Finance', title: 'EBITDA, Free Cash Flow, ROIC', preview: 'The three metrics that actually measure business health, decoded without jargon', section: 'ch-finance' },
+  { tag: 'Book I · Strategy', title: "Porter's Five Forces", preview: 'Why some industries are structurally more profitable than others — regardless of management quality', section: 'ch-strategy' },
+  { tag: 'Book I · Strategy', title: 'Cost Leadership, Differentiation, Focus', preview: "Porter's three generic strategies — and why being stuck in the middle is a guaranteed path to mediocrity", section: 'ch-strategy' },
+  { tag: 'Book I · Strategy', title: 'Disruption Theory — Christensen', preview: 'Incumbents get killed by worse competitors who start at the bottom. The mechanism, and how to defend against it.', section: 'ch-strategy' },
+  { tag: 'Book I · Leadership', title: 'Authentic Leadership', preview: "Bill George's framework: know who you are, operate from values, build trust through consistency", section: 'ch-leadership' },
+  { tag: 'Book I · Leadership', title: 'The Overconfidence Trap', preview: 'The 2008 crisis was built by MBAs. The dangerous product HBS unintentionally manufactures.', section: 'ch-leadership' },
+  { tag: 'Book I · Leadership', title: 'Managing Upward & Sideways', preview: 'Real power in organizations moves laterally and upward. Your boss and peers are strategic assets.', section: 'ch-leadership' },
+  { tag: 'Book I · Marketing', title: 'Job-to-be-Done', preview: 'Customers buy holes, not drill bits. The unit of competitive analysis is the underlying job, not the product category.', section: 'ch-marketing' },
+  { tag: 'Book I · Marketing', title: 'STP Framework', preview: 'Segmentation, Targeting, Positioning — the three-step marketing strategy process', section: 'ch-marketing' },
+  { tag: 'Book I · Marketing', title: 'Brand as Financial Asset', preview: 'Brand premium is a measurable financial metric. Cutting brand investment is selling off productive assets.', section: 'ch-marketing' },
+  { tag: 'Book I · Ethics', title: 'The Ethics Paradox at HBS', preview: "The ethics curriculum exists inside a culture that systematically undermines it. Broughton's honest account.", section: 'ch-ethics' },
+  { tag: 'Book I · Verdict', title: 'Is the MBA Worth $200,000?', preview: 'Broughton\'s honest verdict: for what paths, and at what cost, the HBS degree genuinely delivers.', section: 'ch-ethics' },
+  { tag: 'Book II · People', title: 'Reading People — The Four Drivers', preview: 'Ego, loss aversion, belonging, self-interest — the four forces that actually drive business decisions', section: 'ch-people' },
+  { tag: 'Book II · People', title: "McCormack's People-Reading Checklist", preview: 'Six signals to read in every meeting — first topic, visible reactions, silences, subordinate treatment', section: 'ch-people' },
+  { tag: 'Book II · People', title: 'First Impressions as Intelligence', preview: 'Form a strong first impression, then spend 30 minutes trying to disprove it. Bayesian social reasoning.', section: 'ch-people' },
+  { tag: 'Book II · Selling', title: 'Everyone is Selling', preview: 'Selling is not a job function. It is the fundamental activity of business life.', section: 'ch-selling' },
+  { tag: 'Book II · Selling', title: 'Silence as a Weapon', preview: 'After your pitch, stop talking. Silence creates pressure. The other party must move.', section: 'ch-selling' },
+  { tag: 'Book II · Selling', title: 'Medium Strategy — Face vs. Phone vs. Email', preview: 'Never negotiate a critical deal by letter. Face-to-face is where deals actually get done.', section: 'ch-selling' },
+  { tag: 'Book II · Negotiation', title: 'The Six Negotiation Rules', preview: "Walk-away, anchor later, never accept first offer, understand constraints, concede slowly, long game", section: 'ch-negotiation' },
+  { tag: 'Book II · Negotiation', title: 'The Disappearing Offer', preview: 'Withdrawing an offer activates loss aversion. Use sparingly with a credible withdrawal.', section: 'ch-negotiation' },
+  { tag: 'Book II · Negotiation', title: 'The Comfort Zone Close', preview: 'Close deals on the other party\'s turf. Comfortable counterparts make faster, more generous decisions.', section: 'ch-negotiation' },
+  { tag: 'Book II · Management', title: 'Hire Smart, Define Outcomes, Step Back', preview: "McCormack's management philosophy — and why most managers violate all three", section: 'ch-running' },
+  { tag: 'Book II · Management', title: 'Time Rules — The Only Non-Renewable Resource', preview: 'Agenda or decline. Hardest task first. Delegate everything else. Never confuse busy with productive.', section: 'ch-running' },
+  { tag: 'Book II · Power', title: 'Power Mapping — Who Actually Decides', preview: 'Formal titles misrepresent real power. Shadow hierarchies, information asymmetry, situational power.', section: 'ch-timing' },
+  { tag: 'Book II · Power', title: 'Timing as Strategy', preview: 'The when is often more consequential than the what. Reading the other party\'s world to find the right moment.', section: 'ch-timing' },
+  { tag: 'Synthesis', title: 'Broughton Mode vs. McCormack Mode', preview: 'When to deploy analytical rigor vs. street intelligence — and what it looks like to use both simultaneously', section: 'synthesis-section' },
+  { tag: 'Synthesis', title: 'The Complete Operator', preview: 'The market pays extraordinary premiums for people who can both think clearly and move through human beings', section: 'synthesis-section' },
+];
+
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  document.getElementById('search-input').focus();
+  renderSearchResults('');
+}
+
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+  renderSearchResults(e.target.value);
+});
+
+function renderSearchResults(query) {
+  const container = document.getElementById('search-results');
+  if (!query.trim()) {
+    container.innerHTML = `<div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); padding: 1rem 0; letter-spacing: 0.1em;">Type to search ${searchIndex.length} concepts, rules, and frameworks…</div>`;
+    return;
+  }
+  const q = query.toLowerCase();
+  const results = searchIndex.filter(item =>
+    item.title.toLowerCase().includes(q) ||
+    item.preview.toLowerCase().includes(q) ||
+    item.tag.toLowerCase().includes(q)
+  );
+
+  if (results.length === 0) {
+    container.innerHTML = `<div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); padding: 1rem 0;">No results for "${query}"</div>`;
+    return;
+  }
+
+  function highlight(text, q) {
+    const idx = text.toLowerCase().indexOf(q);
+    if (idx === -1) return text;
+    return text.substring(0, idx) + '<mark>' + text.substring(idx, idx + q.length) + '</mark>' + text.substring(idx + q.length);
+  }
+
+  container.innerHTML = results.map(r => `
+    <div class="search-result-item" onclick="goToSection('${r.section}')">
+      <div class="search-result-tag">${r.tag}</div>
+      <div class="search-result-title">${highlight(r.title, q)}</div>
+      <div class="search-result-preview">${highlight(r.preview, q)}</div>
+    </div>
+  `).join('');
+}
+
+function goToSection(id) {
+  closeSearch();
+  const el = document.getElementById(id);
+  if (el) {
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+  }
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+</body>
+</html>
